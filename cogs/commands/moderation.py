@@ -754,7 +754,7 @@ Reason: `{entry.reason}`\n\n''')
         hacker1 = discord.Embed(
             color=0x886ad1,
             description=
-            f":exclamation: | You have been warned in {ctx.guild.name} for: {reason}",
+            f"<:dnd:1103971230454910996> | You have been warned in {ctx.guild.name} for: {reason}",
             timestamp=ctx.message.created_at)
         # hacker1.set_footer(text=f"Made With 💖 By ~ Hacker_xD#0001",icon_url= "https://media.discordapp.net/attachments/1004709672588161044/1005073754889654343/a_9a2d97cca8cf934ac4b3624051ed9baf.gif")
         #hacker1.set_thumbnail(url ="https://cdn.discordapp.com/avatars/977023331117199481/b0270586b291c69b396cd5a24aa11aff.webp?size=2048")
