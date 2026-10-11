@@ -22,6 +22,9 @@ class NotServerOwner(commands.CheckFailure):
 class NotCoOwnerOrAbove(commands.CheckFailure):
     pass
 
+class NotBanModerator(commands.CheckFailure):
+    pass
+
 class NotAdminOrAbove(commands.CheckFailure):
     pass
 
@@ -91,6 +94,21 @@ def coowner_check():
             "to use this command.")
     return commands.check(predicate)
 
+def ban_moderator_check():
+    """Allow bot owners, server owners, Co Owners, or Discord Administrators."""
+    async def predicate(ctx):
+        if not ctx.guild:
+            raise commands.NoPrivateMessage()
+        if (
+            _is_coowner_or_above(ctx)
+            or ctx.author.guild_permissions.administrator
+        ):
+            return True
+        raise NotBanModerator(
+            "You need Discord Administrator permission or the configured Co Owner role "
+            "to use this command.")
+    return commands.check(predicate)
+
 
 def admin_check():
     """Server owner, Co Owner, OR a member with the configured Admin role."""
@@ -120,6 +138,13 @@ async def global_permission_check(ctx) -> bool:
     # Block DMs (this is a server-only bot)
     if not ctx.guild:
         return False
+
+    # Giveaway commands enforce their own Manage Server/host checks.
+    if (
+        ctx.command is not None
+        and ctx.command.qualified_name.split(" ", 1)[0] == "giveaway"
+    ):
+        return True
 
     # Help describes commands; it does not grant permission to run them.
     if ctx.command is not None and ctx.command.qualified_name == "help":

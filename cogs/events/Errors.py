@@ -3,7 +3,12 @@ from discord.ext import commands
 from core import Dilbar, Cog, Context
 
 from utils.emojis import e
-from utils.permissions import NotServerOwner, NotCoOwnerOrAbove, NotAdminOrAbove
+from utils.permissions import (
+    NotServerOwner,
+    NotCoOwnerOrAbove,
+    NotBanModerator,
+    NotAdminOrAbove,
+)
 
 class Errors(Cog):
   def __init__(self, client: Dilbar):
@@ -31,6 +36,14 @@ class Errors(Cog):
     elif isinstance(error, NotCoOwnerOrAbove):
       embed = discord.Embed(
         description=f"{e.red_cross} | **No Permission**\nYou need the **Co Owner** role or higher to use this command.",
+        color=0x50101,
+      )
+      embed.set_author(name=str(ctx.author), icon_url=ctx.author.display_avatar.url)
+      return await ctx.reply(embed=embed, mention_author=False, delete_after=8)
+
+    elif isinstance(error, NotBanModerator):
+      embed = discord.Embed(
+        description=f"{e.red_cross} | **No Permission**\nYou need Discord **Administrator** permission or the configured **Co Owner** role to ban members.",
         color=0x50101,
       )
       embed.set_author(name=str(ctx.author), icon_url=ctx.author.display_avatar.url)

@@ -110,11 +110,6 @@ async def on_ready():
     print(f"Connected to: {len(client.guilds)} guilds")
     print(f"Connected to: {len(client.users)} users")
     asyncio.create_task(dilbar_stats())
-    try:
-        synced = await client.tree.sync()
-        print(f"synced {len(synced)} commands")
-    except Exception as ex:
-        print(ex)
 
 
 from flask import Flask

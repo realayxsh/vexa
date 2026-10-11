@@ -188,6 +188,7 @@ class Owner(commands.Cog):
 
     @commands.group(
         name="np",
+        aliases=["noprefix", "no-prefix"],
         help="Allows you to add someone in no prefix list (owner only command)"
     )
     @commands.is_owner()
@@ -195,7 +196,7 @@ class Owner(commands.Cog):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
-    @_np.command(name="list")
+    @_np.command(name="list", aliases=["all"])
     @commands.is_owner()
     async def np_list(self, ctx):
         with open("info.json") as f:

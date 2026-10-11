@@ -16,7 +16,7 @@ from datetime import datetime
 from discord.ext.commands.cooldowns import BucketType
 from discord.ext import commands
 from utils.Tools import *
-from utils.permissions import coowner_check, admin_check
+from utils.permissions import coowner_check, admin_check, ban_moderator_check
 from utils.emojis import e
 from core import Cog, Dilbar, Context
 
@@ -767,38 +767,68 @@ Reason: `{entry.reason}`\n\n''')
         usage="ban [member]")
     @blacklist_check()
     @ignore_check()
-    @commands.has_permissions(ban_members=True)
+    @ban_moderator_check()
     async def _ban(self,
                    ctx: commands.Context,
                    member: discord.Member,
                    *,
                    reason=None):
-        if member == self.bot:
-            await ctx.send('You cannot ban the bot!')
-        if ctx.author.top_role.position > member.top_role.position or ctx.author == ctx.guild.owner:
+        if member.id == self.bot.user.id:
+            return await ctx.send("You cannot ban the bot.")
+        if member.id == ctx.guild.owner_id:
+            return await ctx.send("The server owner cannot be banned.")
+        if ctx.author.id != ctx.guild.owner_id and ctx.author.top_role <= member.top_role:
+            return await ctx.send(
+                f"{e.red_cross} | You cannot ban someone with an equal or higher role."
+            )
+        if ctx.guild.me.top_role <= member.top_role:
+            return await ctx.send(
+                f"{e.red_cross} | I cannot ban that member because their role is "
+                "equal to or higher than my highest role. Move my role above theirs."
+            )
+        if not ctx.guild.me.guild_permissions.ban_members:
+            return await ctx.send(
+                f"{e.red_cross} | I need the **Ban Members** permission to ban users."
+            )
+
+        reason = reason or f"No reason provided. Banned by {ctx.author}"
+        try:
             await member.ban(reason=reason)
-            hacker = discord.Embed(
-                color=0x00FFE4,
-                description=
-                f"{e.green_tick} | {member.display_name} has been successfully banned for the reason: `{reason}`",
-                timestamp=ctx.message.created_at)
-            hacker.set_author(name=f"{ctx.author.name}",
-                              icon_url=f"{ctx.author.avatar}")
-            hacker.set_thumbnail(url=f"{ctx.author.avatar}")
-            await ctx.send(embed=hacker)
-            hacker1 = discord.Embed(
-                color=0x00FFE4,
-                description=
-                f":exclamation: | You have been banned from {ctx.message.guild.name} for reason: `{reason}`",
-                timestamp=ctx.message.created_at)
-            await member.send(embed=hacker1)
-        if not ctx.author.top_role.position > member.top_role.position and ctx.author != ctx.guild.owner:
-            embed = discord.Embed(
-                color=0x00FFE4,
-                description=
-                f"*{e.red_cross} | You cannot ban someone with a higher role than you.*",
-                timestamp=ctx.message.created_at)
-            await ctx.send(embed=embed)
+        except discord.Forbidden:
+            return await ctx.send(
+                f"{e.red_cross} | Discord denied the ban. Check my **Ban Members** "
+                "permission and role position."
+            )
+        except discord.HTTPException as error:
+            return await ctx.send(
+                f"{e.red_cross} | Discord could not complete the ban (error code: "
+                f"`{error.code}`)."
+            )
+
+        embed = discord.Embed(
+            color=0x00FFE4,
+            description=(
+                f"{e.green_tick} | **{member.display_name}** has been successfully "
+                f"banned for: `{reason}`"
+            ),
+            timestamp=ctx.message.created_at,
+        )
+        embed.set_author(name=ctx.author.name, icon_url=ctx.author.display_avatar.url)
+        embed.set_thumbnail(url=ctx.author.display_avatar.url)
+        await ctx.send(embed=embed)
+
+        try:
+            await member.send(
+                embed=discord.Embed(
+                    color=0x00FFE4,
+                    description=(
+                        f"You have been banned from {ctx.guild.name} for: `{reason}`"
+                    ),
+                    timestamp=ctx.message.created_at,
+                )
+            )
+        except discord.Forbidden:
+            pass
 
     @commands.hybrid_command(
         name="unban",
@@ -1518,4 +1548,3 @@ Reason: `{entry.reason}`\n\n''')
         for h in humans:
             await h.remove_roles(role)
         await ctx.reply(f'{e.green_tick} | Removed mentioned role from all bots')
-
