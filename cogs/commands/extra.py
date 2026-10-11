@@ -824,6 +824,11 @@ Threads : {len(guild.threads)}
         _clear_user_notes(ctx.author.id)
         await ctx.send("**Your notes have been deleted, thank you**")
 
+    def _get_badge_display_roles(self, member: discord.Member):
+        return [
+            role for role in reversed(member.roles[1:]) if role.hoist
+        ]
+
     async def _get_role_emoji_image_map(self, guild):
         cached = self._role_emoji_image_cache.get(guild.id)
         if cached and cached[0] > time.monotonic():
@@ -886,53 +891,44 @@ Threads : {len(guild.threads)}
             )
         )
         if server_member is not None:
-            display_roles = [
-                (role, role.display_icon)
-                for role in reversed(server_member.roles[1:])
-                if role.hoist
-            ]
-            emoji_roles = [
-                (role, icon)
-                for role, icon in display_roles
-                if isinstance(icon, str)
-            ]
-            role_image_icons = [
-                (role, icon)
-                for role, icon in display_roles
-                if isinstance(icon, discord.Asset)
-            ]
-            emoji_map = (
-                await self._get_role_emoji_image_map(server_member.guild)
-                if role_image_icons
-                else {}
-            )
-            roles_without_icons = []
-            for role, icon in display_roles:
-                if icon is None:
-                    roles_without_icons.append(role)
-                elif isinstance(icon, discord.Asset):
-                    try:
-                        icon_bytes = await icon.read()
-                    except discord.HTTPException:
-                        logger.warning(
-                            "Could not read role icon image %s in guild %s",
-                            role.id,
-                            server_member.guild.id,
-                            exc_info=True,
-                        )
-                        roles_without_icons.append(role)
-                        continue
-                    matching_emoji = emoji_map.get(
-                        hashlib.sha256(icon_bytes).digest()
-                    )
-                    if matching_emoji:
-                        emoji_roles.append((role, matching_emoji))
-                    else:
-                        roles_without_icons.append(role)
-
+            display_roles = self._get_badge_display_roles(server_member)
             if not display_roles:
                 role_container.add_item(discord.ui.TextDisplay("None."))
             else:
+                emoji_roles = []
+                roles_without_icons = []
+                for role in display_roles:
+                    if getattr(role, 'display_icon', None) is None:
+                        roles_without_icons.append(role)
+                        continue
+
+                    icon = role.display_icon
+                    if isinstance(icon, str):
+                        emoji_roles.append((role, icon))
+                        continue
+
+                    if isinstance(icon, discord.Asset):
+                        try:
+                            icon_bytes = await icon.read()
+                        except discord.HTTPException:
+                            logger.warning(
+                                "Could not read role icon image %s in guild %s",
+                                role.id,
+                                server_member.guild.id,
+                                exc_info=True,
+                            )
+                            roles_without_icons.append(role)
+                            continue
+                        matching_emoji = (
+                            await self._get_role_emoji_image_map(server_member.guild)
+                        ).get(hashlib.sha256(icon_bytes).digest())
+                        if matching_emoji:
+                            emoji_roles.append((role, matching_emoji))
+                        else:
+                            roles_without_icons.append(role)
+                    else:
+                        roles_without_icons.append(role)
+
                 if emoji_roles:
                     role_container.add_item(
                         discord.ui.TextDisplay(
