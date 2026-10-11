@@ -26,6 +26,7 @@ class Emojis:
 
     # ── Category Icons (used in help menu) ──────────────────
     general      = "<:general:1103357467762626671>"
+    giveaway     = "<:icon_giveaway:1105720812524277770>"
     music        = "🎵"
     welcome      = "<:welcome:1103358088922279986>"
     premium      = "💎"

@@ -12,6 +12,7 @@ from uuid import uuid4
 import discord
 from discord import app_commands
 from discord.ext import commands, tasks
+from utils.emojis import e
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +27,9 @@ def parse_duration(value: str) -> int:
     """Parse a duration such as 30m, 2h, or 1d12h into seconds."""
     tokens = list(_DURATION_TOKEN.finditer(value))
     compact_value = re.sub(r"\s+", "", value)
-    if not tokens or "".join(token.group(0).replace(" ", "") for token in tokens) != compact_value:
+    if not tokens or "".join(
+        re.sub(r"\s+", "", token.group(0)) for token in tokens
+    ) != compact_value:
         raise ValueError("Use a duration such as `30m`, `2h`, or `1d12h`.")
 
     units = {"s": 1, "m": 60, "h": 3600, "d": 86400}
@@ -179,7 +182,6 @@ class Giveaways(commands.Cog):
                 value=winner_text or "No eligible entries.",
                 inline=False,
             )
-        embed.set_footer(text=f"Giveaway ID: {giveaway['message_id']}")
         return embed
 
     @staticmethod
@@ -236,11 +238,24 @@ class Giveaways(commands.Cog):
     @staticmethod
     async def _send(ctx: commands.Context, content=None, *, ephemeral=False, **kwargs):
         if ctx.interaction is not None:
-            kwargs["ephemeral"] = ephemeral
+            interaction = ctx.interaction
+            if interaction.response.is_done():
+                return await interaction.followup.send(
+                    content, ephemeral=ephemeral, **kwargs
+                )
+            return await interaction.response.send_message(
+                content, ephemeral=ephemeral, **kwargs
+            )
         return await ctx.send(content, **kwargs)
 
+    @staticmethod
+    async def _defer(ctx: commands.Context) -> None:
+        interaction = ctx.interaction
+        if interaction is not None and not interaction.response.is_done():
+            await interaction.response.defer(ephemeral=True)
+
     def help_custom(self):
-        return "🎁", "Giveaways", "Create, join, and manage server giveaways."
+        return e.giveaway, "Giveaways", "Create, join, and manage server giveaways."
 
     @commands.hybrid_group(
         name="giveaway",
@@ -456,6 +471,7 @@ class Giveaways(commands.Cog):
     async def giveaway_end(self, ctx: commands.Context, message_id: str) -> None:
         if not message_id.isdigit():
             return await self._send(ctx, "Enter the numeric message ID shown by the giveaway.", ephemeral=True)
+        await self._defer(ctx)
         key, giveaway = await self._authorize_giveaway(ctx, int(message_id))
         if key is None:
             return
@@ -466,6 +482,7 @@ class Giveaways(commands.Cog):
     async def giveaway_cancel(self, ctx: commands.Context, message_id: str) -> None:
         if not message_id.isdigit():
             return await self._send(ctx, "Enter the numeric message ID shown by the giveaway.", ephemeral=True)
+        await self._defer(ctx)
         key, giveaway = await self._authorize_giveaway(ctx, int(message_id))
         if key is None:
             return
@@ -566,6 +583,7 @@ class Giveaways(commands.Cog):
     async def giveaway_reroll(self, ctx: commands.Context, message_id: str) -> None:
         if not message_id.isdigit():
             return await self._send(ctx, "Enter the numeric message ID shown by the giveaway.", ephemeral=True)
+        await self._defer(ctx)
         key, giveaway = await self._authorize_giveaway(ctx, int(message_id))
         if key is None:
             return
