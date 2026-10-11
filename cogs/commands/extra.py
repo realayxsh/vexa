@@ -21,6 +21,7 @@ from discord.ext.commands import BucketType, cooldown
 import requests
 from typing import *
 from utils import *
+from utils.components import embed_to_container
 
 
 from core import Cog, Dilbar, Context
@@ -899,8 +900,17 @@ Threads : {len(guild.threads)}
     @blacklist_check()
     @ignore_check()
     async def _badges(self, ctx, user: Optional[discord.User] = None):
-       
+
         mem = user or ctx.author
+        server_member = None
+        if ctx.guild is not None:
+            server_member = ctx.guild.get_member(mem.id)
+            if server_member is None:
+                try:
+                    server_member = await ctx.guild.fetch_member(mem.id)
+                except discord.HTTPException:
+                    pass
+
         bdgs = getbadges(mem.id)
         badges = ""
         if mem.public_flags.hypesquad:
@@ -920,35 +930,93 @@ Threads : {len(guild.threads)}
             badges += f"{e.active_dev} **Active Developer**\n"
         if badges == "":
             badges = "None"
-        if bdgs == []:
-            embed2 = discord.Embed(color=mem.color)
-            embed2.add_field(name="**User Badges:**",
-                             value=f"{badges}",
-                             inline=False)
-            embed2.add_field(
-                name="**Bot Badges:**",
-                value=f"{e.red_cross} NO BADGES",
-                inline=False)
-            embed2.set_author(name=f"{mem}",
-                              icon_url=mem.avatar.url
-                              if mem.avatar else mem.default_avatar.url)
-            embed2.set_thumbnail(
-                url=mem.avatar.url if mem.avatar else mem.default_avatar.url)
-            await ctx.reply(embed=embed2, mention_author=False)
-        else:
-            embed = discord.Embed(color=mem.color)
-            embed.add_field(name="**User Badges:**",
-                            value=f"{badges}",
-                            inline=False)
-            embed.add_field(name="**Bot Badges:**",
-                            value="\n".join([bdg for bdg in bdgs]),
-                            inline=False)
-            embed.set_author(name=f"{mem}",
-                             icon_url=mem.avatar.url
-                             if mem.avatar else mem.default_avatar.url)
-            embed.set_thumbnail(
-                url=mem.avatar.url if mem.avatar else mem.default_avatar.url)
-            await ctx.reply(embed=embed, mention_author=False)
+
+        profile = server_member or mem
+        embed = discord.Embed(
+            color=getattr(profile, "color", discord.Color.default())
+        )
+        embed.add_field(
+            name="**User Badges:**",
+            value=badges,
+            inline=False,
+        )
+        embed.add_field(
+            name="**Bot Badges:**",
+            value="\n".join(bdgs) if bdgs else f"{e.red_cross} NO BADGES",
+            inline=False,
+        )
+        embed.set_author(name=str(profile), icon_url=profile.display_avatar.url)
+        embed.set_thumbnail(url=profile.display_avatar.url)
+
+        layout = discord.ui.LayoutView()
+        layout.add_item(embed_to_container(embed))
+
+        if server_member is not None:
+            display_roles = [
+                (role, role.display_icon)
+                for role in reversed(server_member.roles[1:])
+                if role.hoist
+            ]
+            emoji_roles = [
+                (role, icon)
+                for role, icon in display_roles
+                if isinstance(icon, str)
+            ]
+            image_roles = [
+                (role, icon)
+                for role, icon in display_roles
+                if isinstance(icon, discord.Asset)
+            ]
+            roles_without_icons = [
+                role
+                for role, icon in display_roles
+                if icon is None
+            ]
+
+            role_container = discord.ui.Container()
+            role_container.add_item(
+                discord.ui.TextDisplay("## Server Role Badges")
+            )
+
+            if not display_roles:
+                role_container.add_item(discord.ui.TextDisplay("None."))
+            else:
+                if emoji_roles:
+                    role_container.add_item(
+                        discord.ui.TextDisplay(
+                            "\n".join(
+                                f"{role.mention} {icon}"
+                                for role, icon in emoji_roles
+                            )
+                        )
+                    )
+                if roles_without_icons:
+                    role_container.add_item(
+                        discord.ui.TextDisplay(
+                            "\n".join(role.mention for role in roles_without_icons)
+                        )
+                    )
+                for role, icon in image_roles[:6]:
+                    role_container.add_item(
+                        discord.ui.Section(
+                            discord.ui.TextDisplay(role.mention),
+                            accessory=discord.ui.Thumbnail(icon.url),
+                        )
+                    )
+                if len(image_roles) > 6:
+                    role_container.add_item(
+                        discord.ui.TextDisplay(
+                            f"-# {len(image_roles) - 6} more role icons not shown."
+                        )
+                    )
+
+            layout.add_item(role_container)
+
+        await ctx.reply(
+            view=layout,
+            mention_author=False,
+            allowed_mentions=discord.AllowedMentions.none(),
+        )
 
     @commands.hybrid_command(name="ping",
                              aliases=["latency"],
