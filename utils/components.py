@@ -85,6 +85,8 @@ def _has_interactive_items(view) -> bool:
 
 
 def _convert_kwargs(kwargs: dict) -> dict:
+    embed_was_supplied = 'embed' in kwargs
+    embeds_were_supplied = 'embeds' in kwargs
     embed = kwargs.pop('embed', None)
     embeds = kwargs.pop('embeds', None)
     existing_view = kwargs.pop('view', None)
@@ -117,6 +119,12 @@ def _convert_kwargs(kwargs: dict) -> dict:
         kwargs['view'] = layout
     elif existing_view is not None:
         kwargs['view'] = existing_view
+        # A LayoutView edit must be able to explicitly clear legacy embeds.
+        # Preserve empty values instead of treating them like omitted values.
+        if embeds_were_supplied and not embeds:
+            kwargs['embeds'] = []
+        elif embed_was_supplied and embed is None:
+            kwargs['embed'] = None
 
     return kwargs
 

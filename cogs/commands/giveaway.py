@@ -13,6 +13,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands, tasks
 from utils.emojis import e
+from utils.components import build_layout
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +22,7 @@ _MAX_DURATION_SECONDS = 365 * 24 * 60 * 60
 _MAX_WINNERS = 20
 _EMBED_COLOR = 0x2F3136
 _STORE_PATH = Path("giveaways.json")
+_GIVEAWAY_EMOJI = "<a:giveawayyy:1104828912372027422>"
 
 
 def parse_duration(value: str) -> int:
@@ -66,43 +68,8 @@ def _write_store(path: Path, data: dict) -> None:
     temporary_path.replace(path)
 
 
-class GiveawayEntryButton(discord.ui.Button):
-    def __init__(self, cog: "Giveaways", giveaway_key: str, emoji: str):
-        super().__init__(
-            label="Enter / leave",
-            style=discord.ButtonStyle.success,
-            emoji=discord.PartialEmoji.from_str(emoji),
-            custom_id=f"giveaway:entry:{giveaway_key}",
-        )
-        self.cog = cog
-        self.giveaway_key = giveaway_key
-
-    async def callback(self, interaction: discord.Interaction) -> None:
-        await interaction.response.defer(ephemeral=True)
-        if interaction.guild_id is None:
-            return await interaction.followup.send(
-                "Giveaways can only be entered from a server.", ephemeral=True
-            )
-        result = await self.cog._toggle_entry(
-            self.giveaway_key, interaction.guild_id, interaction.user.id
-        )
-        if result is None:
-            return await interaction.followup.send(
-                "This giveaway is no longer open.", ephemeral=True
-            )
-        joined, count = result
-        message = "You entered the giveaway." if joined else "You left the giveaway."
-        await interaction.followup.send(f"{message} Entries: **{count}**.", ephemeral=True)
-
-
-class GiveawayEntryView(discord.ui.View):
-    def __init__(self, cog: "Giveaways", giveaway_key: str, emoji: str):
-        super().__init__(timeout=None)
-        self.add_item(GiveawayEntryButton(cog, giveaway_key, emoji))
-
-
 class Giveaways(commands.Cog):
-    """Persistent giveaways, with per-server button or reaction entry."""
+    """Persistent giveaways with custom-reaction entry."""
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -112,13 +79,7 @@ class Giveaways(commands.Cog):
 
     async def cog_load(self) -> None:
         await self._mutate(self._recover_interrupted_finishes)
-        data = await self._read()
-        for key, giveaway in data["giveaways"].items():
-            if giveaway.get("status") == "active" and giveaway.get("mode") == "button":
-                self.bot.add_view(
-                    GiveawayEntryView(self, key, giveaway["emoji"]),
-                    message_id=int(giveaway["message_id"]),
-                )
+        await self._migrate_existing_giveaways()
         self._expiry_loop.start()
 
     def cog_unload(self) -> None:
@@ -129,6 +90,49 @@ class Giveaways(commands.Cog):
         for giveaway in data["giveaways"].values():
             if giveaway.get("status") == "ending":
                 giveaway["status"] = "active"
+
+    async def _migrate_existing_giveaways(self) -> None:
+        data = await self._read()
+        for key, giveaway in data["giveaways"].items():
+            active = giveaway.get("status") == "active"
+            if (
+                giveaway.get("layout_version") == 2
+                and (not active or (
+                    giveaway.get("mode") == "reaction"
+                    and giveaway.get("emoji") == _GIVEAWAY_EMOJI
+                ))
+            ):
+                continue
+
+            updated = dict(
+                giveaway,
+                mode="reaction",
+                emoji=_GIVEAWAY_EMOJI,
+                layout_version=2,
+            )
+            try:
+                message, _ = await self._fetch_message(giveaway)
+                if active:
+                    await message.add_reaction(
+                        discord.PartialEmoji.from_str(_GIVEAWAY_EMOJI)
+                    )
+                await self._edit_giveaway_message(message, updated)
+            except discord.HTTPException:
+                logger.warning(
+                    "Could not migrate giveaway %s to reaction entry and Component V2",
+                    key,
+                    exc_info=True,
+                )
+                continue
+
+            def save_migration(store: dict) -> None:
+                record = store["giveaways"].get(key)
+                if record:
+                    record["mode"] = "reaction"
+                    record["emoji"] = _GIVEAWAY_EMOJI
+                    record["layout_version"] = 2
+
+            await self._mutate(save_migration)
 
     async def _read(self) -> dict:
         async with self._store_lock:
@@ -141,19 +145,13 @@ class Giveaways(commands.Cog):
             await asyncio.to_thread(_write_store, self.store_path, data)
             return result
 
-    async def _settings(self, guild_id: int) -> dict:
-        data = await self._read()
-        return data["settings"].get(
-            str(guild_id), {"mode": "button", "emoji": None}
-        )
-
     @staticmethod
     def _make_embed(giveaway: dict) -> discord.Embed:
         status = giveaway["status"]
         ends_at = int(giveaway["ends_at"])
         entries = len(giveaway.get("entries", []))
         embed = discord.Embed(
-            title=f"🎉 Giveaway — {giveaway['prize']}",
+            title=f"{_GIVEAWAY_EMOJI} Giveaway — {giveaway['prize']}",
             color=_EMBED_COLOR,
         )
         embed.add_field(name="Hosted by", value=f"<@{giveaway['host_id']}>", inline=True)
@@ -161,10 +159,9 @@ class Giveaways(commands.Cog):
         embed.add_field(name="Entries", value=str(entries), inline=True)
 
         if status == "active":
-            if giveaway["mode"] == "button":
-                entry_text = f"Press the {giveaway['emoji']} button below to enter or leave."
-            else:
-                entry_text = f"React with {giveaway['emoji']} to enter or remove your reaction to leave."
+            entry_text = (
+                f"React with {_GIVEAWAY_EMOJI} to enter or remove your reaction to leave."
+            )
             embed.description = (
                 f"{entry_text}\nEnds <t:{ends_at}:R> "
                 f"(<t:{ends_at}:f>)."
@@ -185,6 +182,15 @@ class Giveaways(commands.Cog):
         return embed
 
     @staticmethod
+    async def _edit_giveaway_message(message: discord.Message, giveaway: dict) -> None:
+        """Replace a giveaway message with its Component V2 layout."""
+        await message.edit(
+            content=None,
+            embeds=[],
+            view=build_layout(embed=Giveaways._make_embed(giveaway)),
+        )
+
+    @staticmethod
     def _valid_store_entry(
         data: dict, giveaway_key: str, guild_id: int
     ) -> Optional[dict]:
@@ -192,25 +198,6 @@ class Giveaways(commands.Cog):
         if not giveaway or int(giveaway["guild_id"]) != guild_id:
             return None
         return giveaway
-
-    async def _toggle_entry(
-        self, giveaway_key: str, guild_id: int, user_id: int
-    ) -> Optional[tuple[bool, int]]:
-        def toggle(data: dict):
-            giveaway = self._valid_store_entry(data, giveaway_key, guild_id)
-            if not giveaway or giveaway.get("status") != "active":
-                return None
-            entries = list(dict.fromkeys(int(value) for value in giveaway.get("entries", [])))
-            if user_id in entries:
-                entries.remove(user_id)
-                joined = False
-            else:
-                entries.append(user_id)
-                joined = True
-            giveaway["entries"] = entries
-            return joined, len(entries)
-
-        return await self._mutate(toggle)
 
     @staticmethod
     def _can_manage(ctx: commands.Context, giveaway: dict) -> bool:
@@ -299,17 +286,6 @@ class Giveaways(commands.Cog):
         except ValueError as error:
             return await self._send(ctx, str(error), ephemeral=True)
 
-        settings = await self._settings(ctx.guild.id)
-        emoji = settings.get("emoji")
-        mode = settings.get("mode", "button")
-        if not emoji:
-            return await self._send(
-                ctx,
-                "A server administrator must set the entry emoji first with "
-                "`/giveaway emoji <custom emoji>`.",
-                ephemeral=True,
-            )
-
         bot_member = ctx.guild.me
         permissions = ctx.channel.permissions_for(bot_member)
         if not permissions.send_messages or not permissions.embed_links:
@@ -317,9 +293,20 @@ class Giveaways(commands.Cog):
                 ctx, "I need **Send Messages** and **Embed Links** in this channel.",
                 ephemeral=True,
             )
-        if mode == "reaction" and not permissions.add_reactions:
+        if not permissions.add_reactions:
             return await self._send(
                 ctx, "I need **Add Reactions** permission in this channel for reaction entry.",
+                ephemeral=True,
+            )
+        giveaway_emoji = discord.PartialEmoji.from_str(_GIVEAWAY_EMOJI)
+        if (
+            ctx.guild.get_emoji(giveaway_emoji.id) is None
+            and not permissions.use_external_emojis
+        ):
+            return await self._send(
+                ctx,
+                "I need **Use External Emojis** permission in this channel to use "
+                "the giveaway reaction.",
                 ephemeral=True,
             )
 
@@ -334,23 +321,37 @@ class Giveaways(commands.Cog):
             "winner_count": winners,
             "ends_at": now + duration_seconds,
             "entries": [],
-            "mode": mode,
-            "emoji": emoji,
+            "mode": "reaction",
+            "emoji": _GIVEAWAY_EMOJI,
+            "layout_version": 2,
             "status": "active",
             "winners": [],
             "winner_history": [],
         }
-        view = GiveawayEntryView(self, key, emoji) if mode == "button" else None
-        message = await ctx.send(embed=self._make_embed(giveaway), view=view)
+        message = await ctx.send(
+            view=build_layout(embed=self._make_embed(giveaway))
+        )
         giveaway["message_id"] = message.id
         try:
-            if mode == "reaction":
-                await message.add_reaction(discord.PartialEmoji.from_str(emoji))
+            await message.add_reaction(
+                discord.PartialEmoji.from_str(_GIVEAWAY_EMOJI)
+            )
 
             def save(data: dict):
                 data["giveaways"][key] = giveaway
 
             await self._mutate(save)
+        except discord.Forbidden:
+            try:
+                await message.delete()
+            except discord.HTTPException:
+                pass
+            return await self._send(
+                ctx,
+                "I couldn't add the giveaway reaction. Check **Add Reactions** "
+                "and **Use External Emojis** permissions.",
+                ephemeral=True,
+            )
         except Exception:
             try:
                 await message.delete()
@@ -364,65 +365,12 @@ class Giveaways(commands.Cog):
             ephemeral=True,
         )
 
-    @giveaway.command(name="emoji", description="Set the server's custom giveaway entry emoji.")
-    @app_commands.describe(emoji="Paste a custom emoji from this server")
-    async def giveaway_emoji(self, ctx: commands.Context, emoji: str) -> None:
-        if not ctx.author.guild_permissions.administrator:
-            return await self._send(ctx, "Only a server administrator can set this.", ephemeral=True)
-        parsed = discord.PartialEmoji.from_str(emoji.strip())
-        server_emoji = ctx.guild.get_emoji(parsed.id) if parsed.id else None
-        if server_emoji is None:
-            return await self._send(
-                ctx,
-                "Use a custom emoji from this server. Copy and paste it here, "
-                "for example `<:name:123456789012345678>`.",
-                ephemeral=True,
-            )
-
-        stored_emoji = str(server_emoji)
-
-        def update(data: dict):
-            settings = data["settings"].setdefault(
-                str(ctx.guild.id), {"mode": "button", "emoji": None}
-            )
-            settings["emoji"] = stored_emoji
-
-        await self._mutate(update)
-        await self._send(
-            ctx,
-            f"Giveaway entry emoji set to {stored_emoji}. This applies to new giveaways.",
-            ephemeral=True,
-        )
-
-    @giveaway.command(name="mode", description="Choose button or reaction giveaway entry.")
-    @app_commands.describe(mode="Choose button or reaction")
-    async def giveaway_mode(self, ctx: commands.Context, mode: str) -> None:
-        if not ctx.author.guild_permissions.administrator:
-            return await self._send(ctx, "Only a server administrator can set this.", ephemeral=True)
-        mode = mode.strip().lower()
-        if mode not in {"button", "reaction"}:
-            return await self._send(ctx, "Choose `button` or `reaction`.", ephemeral=True)
-
-        def update(data: dict):
-            settings = data["settings"].setdefault(
-                str(ctx.guild.id), {"mode": "button", "emoji": None}
-            )
-            settings["mode"] = mode
-
-        await self._mutate(update)
-        await self._send(
-            ctx,
-            f"New giveaways will use **{mode}** entry. Existing giveaways are unchanged.",
-            ephemeral=True,
-        )
-
     @giveaway.command(name="config", description="Show giveaway settings for this server.")
     async def giveaway_config(self, ctx: commands.Context) -> None:
-        settings = await self._settings(ctx.guild.id)
         embed = discord.Embed(title="Giveaway Settings", color=_EMBED_COLOR)
-        embed.add_field(name="Entry method", value=settings.get("mode", "button").title())
-        embed.add_field(name="Entry emoji", value=settings.get("emoji") or "Not set")
-        embed.set_footer(text="Server administrators can change these settings.")
+        embed.add_field(name="Entry method", value="Reaction")
+        embed.add_field(name="Entry emoji", value=_GIVEAWAY_EMOJI)
+        embed.set_footer(text="Giveaways use reaction entry with this emoji.")
         await self._send(ctx, embed=embed, ephemeral=True)
 
     @giveaway.command(name="list", description="List active giveaways in this server.")
@@ -493,7 +441,7 @@ class Giveaways(commands.Cog):
             cancelled = dict(current, status="cancelled")
             try:
                 message, _ = await self._fetch_message(current)
-                await message.edit(embed=self._make_embed(cancelled), view=None)
+                await self._edit_giveaway_message(message, cancelled)
             except discord.NotFound:
                 pass
             except discord.HTTPException:
@@ -513,7 +461,7 @@ class Giveaways(commands.Cog):
         mentions = ", ".join(f"<@{user_id}>" for user_id in winners)
         try:
             await channel.send(
-                f"🎉 Congratulations {mentions}! You won **{giveaway['prize']}**.",
+                f"{_GIVEAWAY_EMOJI} Congratulations {mentions}! You won **{giveaway['prize']}**.",
                 allowed_mentions=discord.AllowedMentions(
                     users=[discord.Object(id=user_id) for user_id in winners],
                     everyone=False,
@@ -548,7 +496,7 @@ class Giveaways(commands.Cog):
 
             try:
                 message, channel = await self._fetch_message(giveaway)
-                await message.edit(embed=self._make_embed(giveaway), view=None)
+                await self._edit_giveaway_message(message, giveaway)
             except discord.NotFound:
                 def close_missing(store: dict):
                     record = store["giveaways"].get(key)
@@ -603,7 +551,7 @@ class Giveaways(commands.Cog):
             rerolled["winner_history"] = list(history.union(new_winners))
             try:
                 message, channel = await self._fetch_message(current)
-                await message.edit(embed=self._make_embed(rerolled), view=None)
+                await self._edit_giveaway_message(message, rerolled)
             except discord.HTTPException:
                 return await self._send(ctx, "I couldn't update the giveaway message.", ephemeral=True)
 
