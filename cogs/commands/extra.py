@@ -1,4 +1,6 @@
 import contextlib
+import asyncio
+import hashlib
 from traceback import format_exception
 import discord
 from discord.ext import commands
@@ -27,6 +29,7 @@ from core import Cog, Dilbar, Context
 from typing import Optional
 from discord import app_commands
 start_time = time.time()
+logger = logging.getLogger(__name__)
 
 
 def datetime_to_seconds(thing: datetime.datetime):
@@ -68,6 +71,7 @@ class Utility(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self._role_emoji_image_cache = {}
 
     @commands.group(name="banner")
     async def banner(self, ctx):
@@ -820,6 +824,41 @@ Threads : {len(guild.threads)}
         _clear_user_notes(ctx.author.id)
         await ctx.send("**Your notes have been deleted, thank you**")
 
+    async def _get_role_emoji_image_map(self, guild):
+        cached = self._role_emoji_image_cache.get(guild.id)
+        if cached and cached[0] > time.monotonic():
+            return cached[1]
+
+        semaphore = asyncio.Semaphore(8)
+
+        async def read_emoji_image(emoji):
+            async with semaphore:
+                try:
+                    image = await emoji.url.read()
+                except discord.HTTPException:
+                    logger.warning(
+                        "Could not read custom emoji image %s in guild %s",
+                        emoji.id,
+                        guild.id,
+                        exc_info=True,
+                    )
+                    return None
+            return hashlib.sha256(image).digest(), str(emoji)
+
+        matches = await asyncio.gather(
+            *(read_emoji_image(emoji) for emoji in guild.emojis)
+        )
+        image_map = {}
+        for match in matches:
+            if match is not None:
+                image_map.setdefault(match[0], match[1])
+
+        self._role_emoji_image_cache[guild.id] = (
+            time.monotonic() + 300,
+            image_map,
+        )
+        return image_map
+
     @commands.hybrid_command(name="badges",
                              help="Show a member's Yawr role badges.",
                              aliases=["badge", "profile", "pr"],
@@ -838,9 +877,14 @@ Threads : {len(guild.threads)}
                 except discord.HTTPException:
                     pass
 
+        profile = server_member or mem
         layout = discord.ui.LayoutView()
         role_container = discord.ui.Container()
-        role_container.add_item(discord.ui.TextDisplay("## Yawr Badges"))
+        role_container.add_item(
+            discord.ui.TextDisplay(
+                f"## {discord.utils.escape_markdown(profile.display_name)}'s Yawr Badges"
+            )
+        )
         if server_member is not None:
             display_roles = [
                 (role, role.display_icon)
@@ -852,16 +896,39 @@ Threads : {len(guild.threads)}
                 for role, icon in display_roles
                 if isinstance(icon, str)
             ]
-            image_roles = [
+            role_image_icons = [
                 (role, icon)
                 for role, icon in display_roles
                 if isinstance(icon, discord.Asset)
             ]
-            roles_without_icons = [
-                role
-                for role, icon in display_roles
-                if icon is None
-            ]
+            emoji_map = (
+                await self._get_role_emoji_image_map(server_member.guild)
+                if role_image_icons
+                else {}
+            )
+            roles_without_icons = []
+            for role, icon in display_roles:
+                if icon is None:
+                    roles_without_icons.append(role)
+                elif isinstance(icon, discord.Asset):
+                    try:
+                        icon_bytes = await icon.read()
+                    except discord.HTTPException:
+                        logger.warning(
+                            "Could not read role icon image %s in guild %s",
+                            role.id,
+                            server_member.guild.id,
+                            exc_info=True,
+                        )
+                        roles_without_icons.append(role)
+                        continue
+                    matching_emoji = emoji_map.get(
+                        hashlib.sha256(icon_bytes).digest()
+                    )
+                    if matching_emoji:
+                        emoji_roles.append((role, matching_emoji))
+                    else:
+                        roles_without_icons.append(role)
 
             if not display_roles:
                 role_container.add_item(discord.ui.TextDisplay("None."))
@@ -878,20 +945,9 @@ Threads : {len(guild.threads)}
                 if roles_without_icons:
                     role_container.add_item(
                         discord.ui.TextDisplay(
-                            "\n".join(role.mention for role in roles_without_icons)
-                        )
-                    )
-                for role, icon in image_roles[:6]:
-                    role_container.add_item(
-                        discord.ui.Section(
-                            discord.ui.TextDisplay(role.mention),
-                            accessory=discord.ui.Thumbnail(icon.url),
-                        )
-                    )
-                if len(image_roles) > 6:
-                    role_container.add_item(
-                        discord.ui.TextDisplay(
-                            f"-# {len(image_roles) - 6} more role icons not shown."
+                            "\n".join(
+                                role.mention for role in roles_without_icons
+                            )
                         )
                     )
         else:
