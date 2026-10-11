@@ -50,7 +50,7 @@ class Errors(Cog):
       ctx.command.reset_cooldown(ctx)
     elif isinstance(error, commands.CheckFailure):
       if str(ctx.author.id) in data["ids"]:
-        embed = discord.Embed(title=f"{e.red_cross} Blacklisted", description="You Are Blacklisted From Using My Commands.\nIf You Think That It Is A Mistake, You Can Appeal In Our Support Server By Clicking [here](https://discord.gg/HyWQdHjNPz)", color=0x50101)
+        embed = discord.Embed(title=f"{e.red_cross} Blacklisted", description="You Are Blacklisted From Using My Commands.\nIf you believe this is a mistake, contact the bot owner.", color=0x50101)
         await ctx.reply(embed=embed, mention_author=False)
       if str(ctx.channel.id) in randi["ids"]:
         await ctx.reply(f"My all commands are disabled for {ctx.channel.mention}",mention_author=True, delete_after=6)

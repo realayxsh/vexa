@@ -85,11 +85,6 @@ Threads : {len(guild.threads)}
         )
     embed.add_field(name="Help", value="Sends the help page.", inline=False)
     embed.add_field(name="Botinfo", value="Show some info about the bot.", inline=False)
-    embed.add_field(
-            name="Inv",
-            value="You Can Support Yawr Support by Joining Our Support Server! Thank you!",
-            inline=False,
-        )
     channel = discord.utils.get(guild.text_channels, name="general")
     if not channel:
         channels = [channel for channel in guild.text_channels if channel.permissions_for(guild.me).send_messages]

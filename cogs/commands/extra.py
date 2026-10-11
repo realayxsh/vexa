@@ -151,11 +151,7 @@ class Utility(commands.Cog):
         total_members = sum(g.member_count for g in self.bot.guilds
                             if g.member_count != None)
 
-        embed = discord.Embed(
-            color=0x2f3136,
-            description=
-            "[Invite](https://discord.com/api/oauth2/authorize?client_id=1103575978770436116&permissions=8&scope=bot) ● [Support Server](https://discord.gg/HyWQdHjNPz)"
-        )
+        embed = discord.Embed(color=0x2f3136)
 
         embed.add_field(
             name=f'{e.discord_icon} • **Servers**',
@@ -193,18 +189,6 @@ class Utility(commands.Cog):
         embed.set_footer(text='Thanks For Using Yawr Support service',
                          icon_url=self.bot.user.display_avatar.url)
 
-        await ctx.send(embed=embed)
-
-    @commands.hybrid_command(name="invite", aliases=['inv'])
-    @blacklist_check()
-    @ignore_check()
-    async def invite(self, ctx: commands.Context):
-        embed = discord.Embed(
-            description=
-            "> • [Click Here To Invite Yawr Support To Your Server](https://discord.com/api/oauth2/authorize?client_id=1103575978770436116&permissions=8&scope=bot)\n> • [Click Here To Join My Support Server](https://discord.gg/HyWQdHjNPz)",
-            color=0x2f3136)
-        embed.set_author(name=f"{ctx.author.name}",
-                         icon_url=f"{ctx.author.avatar}")
         await ctx.send(embed=embed)
 
     @blacklist_check()

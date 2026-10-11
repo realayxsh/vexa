@@ -57,35 +57,19 @@ class HelpCommand(commands.HelpCommand):
             embed = discord.Embed(
                 title=f"{e.cross_anim} Blacklisted",
                 description=
-                "You Are Blacklisted From Using My Commands.\nIf You Think That It Is A Mistake, You Can Appeal In Our Support Server By Clicking [here](https://discord.gg/HyWQdHjNPz)",
+                "You Are Blacklisted From Using My Commands.\nIf you believe this is a mistake, contact the bot owner.",
                 color=0x2f3136)
             return await self.context.reply(embed=embed, mention_author=False)
         elif str(self.context.channel.id) in randi["ids"]:
             return None
         prefix = (getConfig(self.context.guild.id)["prefix"]
                   if self.context.guild else "-")
-        perms = discord.Permissions.none()
-        perms.read_messages = True
-        perms.external_emojis = True
-        perms.send_messages = True
-        perms.manage_roles = True
-        perms.manage_channels = True
-        perms.ban_members = True
-        perms.kick_members = True
-        perms.manage_messages = True
-        perms.embed_links = True
-        perms.read_message_history = True
-        perms.attach_files = True
-        perms.add_reactions = True
-        perms.administrator = True
-        inv = discord.utils.oauth_url(self.context.bot.user.id,
-                                      permissions=perms)
         filtered = await self.filter_commands(self.context.bot.walk_commands(),
                                               sort=True)
         embed = discord.Embed(
             title="Help Command Overview :",
             description=
-            f"{e.dot_white} Prefix for this server is `{prefix}`\n{e.dot_white} Total Commands: {len(set(self.context.bot.walk_commands()))} | Usable by you (here): {len(set(filtered))}\n{e.dot_white} Type `{prefix}help <command | module>` for more info.\n{e.dot_white} | [Support Server](https://discord.gg/HyWQdHjNPz) | [Invite]({inv})",
+            f"{e.dot_white} Prefix for this server is `{prefix}`\n{e.dot_white} Total Commands: {len(set(self.context.bot.walk_commands()))} | Usable by you (here): {len(set(filtered))}\n{e.dot_white} Type `{prefix}help <command | module>` for more info.",
             color=0x2f3136)
         embed.set_thumbnail(url=self.context.bot.user.display_avatar.url)
 
@@ -125,7 +109,7 @@ class HelpCommand(commands.HelpCommand):
             embed = discord.Embed(
                 title=f"{e.red_cross} Blacklisted",
                 description=
-                "You Are Blacklisted From Using My Commands.\nIf You Think That It Is A Mistake, You Can Appeal In Our Support Server By Clicking [here](https://discord.gg/HyWQdHjNPz)",
+                "You Are Blacklisted From Using My Commands.\nIf you believe this is a mistake, contact the bot owner.",
                 color=0x2f3136)
             await self.context.reply(embed=embed, mention_author=False)
         elif str(self.context.channel.id) in randi["ids"]:
@@ -178,7 +162,7 @@ class HelpCommand(commands.HelpCommand):
             embed = discord.Embed(
                 title=f"{e.red_cross} Blacklisted",
                 description=
-                "You Are Blacklisted From Using My Commands.\nIf You Think That It Is A Mistake, You Can Appeal In Our Support Server By Clicking [here](https://discord.gg/HyWQdHjNPz)",
+                "You Are Blacklisted From Using My Commands.\nIf you believe this is a mistake, contact the bot owner.",
                 color=0x2f3136)
             await self.context.reply(embed=embed, mention_author=False)
         elif str(self.context.channel.id) in randi["ids"]:
@@ -208,7 +192,7 @@ class HelpCommand(commands.HelpCommand):
             embed = discord.Embed(
                 title=f"{e.red_cross} Blacklisted",
                 description=
-                "You Are Blacklisted From Using My Commands.\nIf You Think That It Is A Mistake, You Can Appeal In Our Support Server By Clicking [here](https://discord.gg/HyWQdHjNPz)",
+                "You Are Blacklisted From Using My Commands.\nIf you believe this is a mistake, contact the bot owner.",
                 color=0x2f3136)
             return await self.context.reply(embed=embed, mention_author=False)
         elif str(self.context.channel.id) in randi["ids"]:

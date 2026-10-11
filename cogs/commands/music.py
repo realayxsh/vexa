@@ -668,9 +668,8 @@ class Music(commands.Cog):
                 mbed = discord.Embed(
                     color=0x2f3136,
                     description=
-                    f"{e.playing} [{track.title}](https://discord.gg/HyWQdHjNPz)"
+                    f"{e.playing} {track.title}"
                 )
-                # mbed.add_field(name=f"{e.playing} ", value=f"[{track.title}](https://discord.gg/HyWQdHjNPz)")
                 # mbed.add_field(name=f"{e.jk_users} Requested By", value=f"{ctx.author.mention}")
                 mbed.add_field(name=f"{e.stage_icon} Song By",
                                value=f"`{track.author}`")
@@ -693,7 +692,7 @@ class Music(commands.Cog):
                 await vc.queue.put_wait(track)
                 embed = discord.Embed(
                     description=
-                    f'[{track}](https://discord.gg/HyWQdHjNPz) Added To The Queue',
+                    f'{track} Added To The Queue',
                     color=0x2f3136)
 
                 embed.set_author(name="ADDED TO QUEUE",
@@ -713,10 +712,9 @@ class Music(commands.Cog):
                 mbed = discord.Embed(
                     color=0x2f3136,
                     description=
-                    f"{e.playing} [{track1}](https://discord.gg/HyWQdHjNPz)"
+                    f"{e.playing} {track1}"
                 )
                 mbed.add_field(name="Song Url", value=search)
-                # mbed.add_field(name=f"{e.playing} ", value=f"[{track1}](https://discord.gg/HyWQdHjNPz)")
                 mbed.set_author(name="NOW PLAYING",
                                 icon_url=f"{ctx.author.avatar}")
                 mbed.set_thumbnail(url=self.bot.user.display_avatar.url)
@@ -732,7 +730,7 @@ class Music(commands.Cog):
                 await vc.queue.put_wait(track1[0])
                 embed = discord.Embed(
                     description=
-                    f'[{track1}](https://discord.gg/HyWQdHjNPz) Added To The Queue',
+                    f'{track1} Added To The Queue',
                     color=0x2f3136)
 
                 embed.set_author(name="ADDED TO QUEUE",
@@ -753,9 +751,8 @@ class Music(commands.Cog):
                 mbed = discord.Embed(
                     color=0x2f3136,
                     description=
-                    f"{e.playing} [{track2.title}](https://discord.gg/HyWQdHjNPz)"
+                    f"{e.playing} {track2.title}"
                 )
-                #mbed.add_field(name=f"{e.playing} ", value=f"[{track2.title}](https://discord.gg/HyWQdHjNPz)")
                 #mbed.add_field(name=f"{e.jk_users} Requested By", value=f"{ctx.author.mention}")
                 mbed.add_field(name=f"{e.stage_icon} Song By",
                                value=f"`{track2.author}`")
@@ -779,7 +776,7 @@ class Music(commands.Cog):
                 await vc.queue.put_wait(track2)
                 embed = discord.Embed(
                     description=
-                    f'[{track2}](https://discord.gg/HyWQdHjNPz) Added To The Queue',
+                    f'{track2} Added To The Queue',
                     color=0x2f3136)
 
                 embed.set_author(name="ADDED TO QUEUE",
@@ -803,9 +800,8 @@ class Music(commands.Cog):
                 mbed = discord.Embed(
                     color=0x2f3136,
                     description=
-                    f"{e.playing} [{new_song.title}](https://discord.gg/HyWQdHjNPz)"
+                    f"{e.playing} {new_song.title}"
                 )
-                #mbed.add_field(name=f"{e.playing} ", value=f"[{new_song.title}](https://discord.gg/HyWQdHjNPz)")
                 #mbed.add_field(name=f"{e.jk_users} Requested By", value=f"{ctx.author.mention}")
                 mbed.add_field(name=f"{e.stage_icon} Song By",
                                value=f"`{new_song.author}`")
@@ -823,9 +819,8 @@ class Music(commands.Cog):
                 mbed = discord.Embed(
                     color=0x2f3136,
                     description=
-                    f"{e.playing} [{new_song.title}](https://discord.gg/HyWQdHjNPz)"
+                    f"{e.playing} {new_song.title}"
                 )
-                #mbed.add_field(name=f"{e.playing} ", value=f"[{new_song.title}](https://discord.gg/HyWQdHjNPz)")
                 mbed.add_field(
                     name=f"{e.users} Requested By",
                     value=f"{ctx.author.mention}")
@@ -1178,7 +1173,7 @@ class Music(commands.Cog):
             return await ctx.send(embed=hacker1)
 
         em = discord.Embed(
-            description=f"[{vc.track}](https://discord.gg/HyWQdHjNPz)",
+            description=str(vc.track),
             color=0x2f3136)
 
         em.add_field(name=f"{e.stage_icon} Song By",
@@ -1299,7 +1294,7 @@ class Music(commands.Cog):
         for song in copy:
             count += 1
             hacker4.add_field(name=f"Position : {count}",
-                              value=f"[{song.title}](https://discord.gg/HyWQdHjNPz)")
+                              value=song.title)
         return await ctx.send(embed=hacker4)
 
     @_queue.command(name="clear", aliases=[("c")])
