@@ -67,7 +67,10 @@ def _is_coowner_or_above(ctx) -> bool:
 
 
 def _is_admin_or_above(ctx) -> bool:
-    if _is_coowner_or_above(ctx):
+    if (
+        _is_coowner_or_above(ctx)
+        or ctx.author.guild_permissions.administrator
+    ):
         return True
     admin_id = _get_role_id(ctx.guild.id, "admin")
     return _member_has_role(ctx.author, admin_id)
@@ -116,7 +119,7 @@ def ban_moderator_check():
 
 
 def admin_check():
-    """Server owner, Co Owner, OR a member with the configured Admin role."""
+    """Server owner, Co Owner, Discord Administrator, or configured Admin role."""
     async def predicate(ctx):
         if not ctx.guild:
             raise commands.NoPrivateMessage()
@@ -155,9 +158,9 @@ async def global_permission_check(ctx) -> bool:
     if ctx.command is not None and ctx.command.qualified_name == "help":
         return True
 
-    # Discord Administrators can use moderation commands without a configured bot role.
+    # Discord Administrators can use moderation and server role commands.
     if (
-        getattr(ctx.cog, "qualified_name", None) == "Moderation"
+        getattr(ctx.cog, "qualified_name", None) in {"Moderation", "Server"}
         and ctx.author.guild_permissions.administrator
     ):
         return True
