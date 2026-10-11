@@ -1,0 +1,18 @@
+# Core Discord library — discord.py 2.x (NOT py-cord, they conflict)
+discord.py>=2.6,<3
+jishaku>=2.6,<3
+aiohttp>=3.8.0
+Flask>=3.0,<4
+requests>=2.32,<3
+async-timeout==4.0.2
+python-dotenv==1.0.0
+psutil>=5.9.0
+httpx>=0.23.0
+discord-ext-menus==1.1
+import_expression
+braceexpand
+tabulate
+discord-games
+reactionmenu
+tasksio
+wavelink>=1.3.3,<2
