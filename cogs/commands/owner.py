@@ -51,6 +51,44 @@ class Owner(commands.Cog):
         except Exception as ex:
                 await ctx.reply(f"{e.cross_mark} Error: {ex}")
 
+    @commands.hybrid_command(
+        name="setavatar",
+        help="Change the bot's profile picture using an uploaded image.",
+        usage="setavatar <image attachment>",
+    )
+    @commands.is_owner()
+    async def set_avatar(self, ctx: Context, image: discord.Attachment):
+        if image.size > 10 * 1024 * 1024:
+            return await ctx.reply(
+                f"{e.cross_mark} The image must be 10 MB or smaller.",
+                mention_author=False,
+            )
+
+        if image.content_type not in {
+            "image/png",
+            "image/jpeg",
+            "image/gif",
+            "image/webp",
+        }:
+            return await ctx.reply(
+                f"{e.cross_mark} Please attach a PNG, JPEG, GIF, or WebP image.",
+                mention_author=False,
+            )
+
+        try:
+            avatar = await image.read()
+            await self.client.user.edit(avatar=avatar)
+        except discord.HTTPException as error:
+            return await ctx.reply(
+                f"{e.cross_mark} Discord couldn't update the bot avatar: `{error}`",
+                mention_author=False,
+            )
+
+        await ctx.reply(
+            f"{e.green_tick} Bot profile picture updated.",
+            mention_author=False,
+        )
+
     @commands.command(name="restart", help="Restarts the client.")
     @commands.is_owner()
     async def _restart(self, ctx: Context):
