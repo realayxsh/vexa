@@ -21,7 +21,6 @@ from discord.ext.commands import BucketType, cooldown
 import requests
 from typing import *
 from utils import *
-from utils.components import embed_to_container
 
 
 from core import Cog, Dilbar, Context
@@ -134,62 +133,6 @@ class Utility(commands.Cog):
                 if ctx.author.avatar else ctx.author.default_avatar.url)
 
             await ctx.send(embed=embed)
-
-    @commands.hybrid_command(name="statistics",
-                             aliases=["st", "stats"],
-                             usage="stats",with_app_command = True)
-    @blacklist_check()
-    @ignore_check()
-    async def stats(self, ctx):
-        """Shows some usefull information about Yawr Support"""
-        serverCount = len(self.bot.guilds)
-
-        total_memory = psutil.virtual_memory().total >> 20
-        used_memory = psutil.virtual_memory().used >> 20
-        cpu_used = str(psutil.cpu_percent())
-
-        total_members = sum(g.member_count for g in self.bot.guilds
-                            if g.member_count != None)
-
-        embed = discord.Embed(color=0x2f3136)
-
-        embed.add_field(
-            name=f'{e.discord_icon} • **Servers**',
-            value=f'```Total: {serverCount} Server```')
-        embed.add_field(name=f'{e.users} • **Users**',
-                        value=f'```Total: {total_members} Users```')
-        embed.add_field(
-            name=f"{e.computer} • **System**",
-            value=
-            f"```RAM: {used_memory}/{total_memory} MB\nCPU: {cpu_used}% used.```"
-        )
-        embed.add_field(
-            name=f"{e.python} • **Python Version**",
-            value=f"```{sys.version}```"),
-        embed.add_field(
-            name=
-            f'{e.python} • **Discord.py Version**',
-            value=f'```{discord.__version__}```')
-        embed.add_field(
-            name=f"{e.ping} • **Ping**",
-            value=f"```{round(self.bot.latency * 1000, 2)} ms```")
-        devansh = await self.bot.fetch_user(599776766071930910)
-        vinit = await self.bot.fetch_user(599776766071930910)
-      
-
-        embed.add_field(
-            name=f'{e.developer} • **Developers**',
-            value=
-            f"[{devansh}](https://discord.com/users/599776766071930910)\n"
-        )
-
-        embed.set_author(name=f"{self.bot.user.name} Stats",
-                         icon_url=self.bot.user.display_avatar.url)
-        embed.set_thumbnail(url=self.bot.user.display_avatar.url)
-        embed.set_footer(text='Thanks For Using Yawr Support service',
-                         icon_url=self.bot.user.display_avatar.url)
-
-        await ctx.send(embed=embed)
 
     @blacklist_check()
     @ignore_check()
@@ -878,7 +821,7 @@ Threads : {len(guild.threads)}
         await ctx.send("**Your notes have been deleted, thank you**")
 
     @commands.hybrid_command(name="badges",
-                             help="Check what premium badges a user have.",
+                             help="Show a member's Yawr role badges.",
                              aliases=["badge", "profile", "pr"],
                              usage="Badges [user]",with_app_command = True)
     @blacklist_check()
@@ -895,46 +838,9 @@ Threads : {len(guild.threads)}
                 except discord.HTTPException:
                     pass
 
-        bdgs = getbadges(mem.id)
-        badges = ""
-        if mem.public_flags.hypesquad:
-            badges += "Hypesquad\n"
-        elif mem.public_flags.hypesquad_balance:
-            badges += f"{e.hypersquad} **HypeSquad Balance**\n"
-
-        elif mem.public_flags.hypesquad_bravery:
-            badges += f"{e.bravery} **HypeSquad Bravery**\n"
-        elif mem.public_flags.hypesquad_brilliance:
-            badges += f"{e.brilliance} **Hypesquad Brilliance**\n"
-        if mem.public_flags.early_supporter:
-            badges += f"{e.early_support} **Early Supporter**\n"
-        elif mem.public_flags.verified_bot_developer:
-            badges += f"{e.developer} **Verified Bot Developer**\n"
-        elif mem.public_flags.active_developer:
-            badges += f"{e.active_dev} **Active Developer**\n"
-        if badges == "":
-            badges = "None"
-
-        profile = server_member or mem
-        embed = discord.Embed(
-            color=getattr(profile, "color", discord.Color.default())
-        )
-        embed.add_field(
-            name="**User Badges:**",
-            value=badges,
-            inline=False,
-        )
-        embed.add_field(
-            name="**Bot Badges:**",
-            value="\n".join(bdgs) if bdgs else f"{e.red_cross} NO BADGES",
-            inline=False,
-        )
-        embed.set_author(name=str(profile), icon_url=profile.display_avatar.url)
-        embed.set_thumbnail(url=profile.display_avatar.url)
-
         layout = discord.ui.LayoutView()
-        layout.add_item(embed_to_container(embed))
-
+        role_container = discord.ui.Container()
+        role_container.add_item(discord.ui.TextDisplay("## Yawr Badges"))
         if server_member is not None:
             display_roles = [
                 (role, role.display_icon)
@@ -956,11 +862,6 @@ Threads : {len(guild.threads)}
                 for role, icon in display_roles
                 if icon is None
             ]
-
-            role_container = discord.ui.Container()
-            role_container.add_item(
-                discord.ui.TextDisplay("## Server Role Badges")
-            )
 
             if not display_roles:
                 role_container.add_item(discord.ui.TextDisplay("None."))
@@ -993,9 +894,10 @@ Threads : {len(guild.threads)}
                             f"-# {len(image_roles) - 6} more role icons not shown."
                         )
                     )
+        else:
+            role_container.add_item(discord.ui.TextDisplay("None."))
 
-            layout.add_item(role_container)
-
+        layout.add_item(role_container)
         await ctx.reply(
             view=layout,
             mention_author=False,
