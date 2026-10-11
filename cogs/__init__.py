@@ -20,6 +20,7 @@ from .commands.jsk import Jsk
 from .commands.setup import Setup
 from .commands.stay import Stay
 from .commands.embed import EmbedBuilder
+from .commands.giveaway import Giveaways
 
 
 
@@ -58,6 +59,7 @@ async def setup(bot: commands.Bot):
     await bot.add_cog(Setup(bot))
     await bot.add_cog(Stay(bot))
     await bot.add_cog(EmbedBuilder(bot))
+    await bot.add_cog(Giveaways(bot))
 
     ####################
 

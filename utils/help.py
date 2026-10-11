@@ -72,15 +72,23 @@ class View(discord.ui.View):
           icon_url=
           "https://cdn.discordapp.com/icons/1066734883449340015/18fd7390db5acf2f35635d51617e9e77.png?size=2048"
         )
-        for command in cog.get_commands():
+        for command in self.iter_commands(cog.get_commands()):
           params = ""
           for param in command.clean_params:
             params += f" <{param}>"
-          embed.add_field(name=f"{command.name}{params}",
-                          value=f"{command.help}\n\u200b",
+          command_name = command.qualified_name
+          command_help = command.help or command.short_doc or "No description provided."
+          embed.add_field(name=f"{command_name}{params}",
+                          value=f"{command_help}\n\u200b",
                           inline=False)
         embeds.append(embed)
     return options, embeds
+
+  @staticmethod
+  def iter_commands(commands_list):
+    for command in commands_list:
+      yield command
+      yield from View.iter_commands(getattr(command, "commands", []))
 
   async def set_page(self, page: int, interaction: discord.Interaction):
     if 0 <= page < len(self.embeds):

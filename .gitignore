@@ -49,6 +49,8 @@ Thumbs.db
 .local/
 /generated-artifacts/
 __pycache__/
+/giveaways.json
+/giveaways.json.tmp
 
 # Environment secrets — never commit
 .env
