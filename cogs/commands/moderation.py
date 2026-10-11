@@ -703,32 +703,57 @@ Reason: `{entry.reason}`\n\n''')
                     member: discord.Member,
                     *,
                     reason=None):
-        if member == self.bot:
-            await ctx.send(f"You cannot kick me!")
-        if ctx.author.top_role.position > member.top_role.position or member == ctx.guild.owner:
-            await member.kick(reason=reason)
-            hacker = discord.Embed(
-                color=0x2f3136,
-                description=
-                f"{e.green_tick} | {member.display_name} has been kicked from this guild, for: {reason}",
-                timestamp=ctx.message.created_at)
-            
-            hacker.set_author(name=f"{ctx.author.name}",
-                              icon_url=f"{ctx.author.avatar}")
-            hacker.set_thumbnail(url=f"{ctx.author.avatar}")
-            await ctx.send(embed=hacker)
-            hacker1 = discord.Embed(
-                color=0x2f3136,
-                description=
-                f":exclamation: | You have been kicked from {ctx.guild.name} for: {reason}!",
-                timestamp=ctx.message.created_at)
-            #hacker1.set_footer(text=f"Made With 💖 By ~ Hacker_xD#0001",icon_url= "https://media.discordapp.net/attachments/1004709672588161044/1005073754889654343/a_9a2d97cca8cf934ac4b3624051ed9baf.gif")
-            # hacker1.set_thumbnail(url = "https://cdn.discordapp.com/avatars/1024854362801057884/af987937665a69cc5fc01f587179d7ae.webp?size=2048")
-            await member.send(embed=hacker1)
-        if not ctx.author.top_role.position > member.top_role.position and ctx.author != ctx.guild.owner:
-            await ctx.send(
-                f"*{e.red_cross} | You cannot kick someone with a higher role than you!*"
+        if member.id == self.bot.user.id:
+            return await ctx.send("You cannot kick the bot.")
+        if member.id == ctx.guild.owner_id:
+            return await ctx.send("The server owner cannot be kicked.")
+        if ctx.author.id != ctx.guild.owner_id and ctx.author.top_role <= member.top_role:
+            return await ctx.send(
+                f"{e.red_cross} | You cannot kick someone with an equal or higher role."
             )
+        if ctx.guild.me.top_role <= member.top_role:
+            return await ctx.send(
+                f"{e.red_cross} | I cannot kick that member because their role is "
+                "equal to or higher than my highest role. Move my role above theirs."
+            )
+        if not ctx.guild.me.guild_permissions.kick_members:
+            return await ctx.send(
+                f"{e.red_cross} | I need the **Kick Members** permission to kick users."
+            )
+
+        reason = reason or f"No reason provided. Kicked by {ctx.author}"
+        try:
+            await member.kick(reason=reason)
+        except discord.Forbidden:
+            return await ctx.send(
+                f"{e.red_cross} | Discord denied the kick. Check my **Kick Members** "
+                "permission and role position."
+            )
+        except discord.HTTPException as error:
+            return await ctx.send(
+                f"{e.red_cross} | Discord could not complete the kick (error code: "
+                f"`{error.code}`)."
+            )
+
+        embed = discord.Embed(
+            color=0x2f3136,
+            description=f"{e.green_tick} | **{member.display_name}** has been kicked for: `{reason}`",
+            timestamp=ctx.message.created_at,
+        )
+        embed.set_author(name=ctx.author.name, icon_url=ctx.author.display_avatar.url)
+        embed.set_thumbnail(url=ctx.author.display_avatar.url)
+        await ctx.send(embed=embed)
+
+        try:
+            await member.send(
+                embed=discord.Embed(
+                    color=0x2f3136,
+                    description=f"You have been kicked from {ctx.guild.name} for: `{reason}`",
+                    timestamp=ctx.message.created_at,
+                )
+            )
+        except discord.Forbidden:
+            pass
 
     @commands.hybrid_command(name="warn",
                              help="To warn a specific user.",

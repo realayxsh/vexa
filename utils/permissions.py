@@ -57,6 +57,11 @@ def _is_server_owner(ctx) -> bool:
 def _is_coowner_or_above(ctx) -> bool:
     if _is_server_owner(ctx) or ctx.author.id in ctx.bot.owner_ids:
         return True
+    if (
+        getattr(ctx.cog, "qualified_name", None) == "Moderation"
+        and ctx.author.guild_permissions.administrator
+    ):
+        return True
     coown_id = _get_role_id(ctx.guild.id, "coown")
     return _member_has_role(ctx.author, coown_id)
 
@@ -148,6 +153,13 @@ async def global_permission_check(ctx) -> bool:
 
     # Help describes commands; it does not grant permission to run them.
     if ctx.command is not None and ctx.command.qualified_name == "help":
+        return True
+
+    # Discord Administrators can use moderation commands without a configured bot role.
+    if (
+        getattr(ctx.cog, "qualified_name", None) == "Moderation"
+        and ctx.author.guild_permissions.administrator
+    ):
         return True
 
     # Server owner → full access
