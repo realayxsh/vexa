@@ -248,7 +248,10 @@ class Giveaways(commands.Cog):
         name="giveaway",
         invoke_without_command=True,
         description="Create and manage server giveaways.",
-        help="Create, configure, join, end, cancel, reroll, and list server giveaways.",
+        help=(
+            "Create, configure, end, cancel, reroll, and list server giveaways. "
+            "Use either `/giveaway ...` or `<prefix>giveaway ...`."
+        ),
     )
     @commands.guild_only()
     async def giveaway(self, ctx: commands.Context):
@@ -257,7 +260,11 @@ class Giveaways(commands.Cog):
     @giveaway.command(
         name="start",
         description="Start a giveaway in this channel.",
-        help="Usage: `/giveaway start prize duration winners`. Duration examples: `30m`, `2h`, `1d`.",
+        help=(
+            "Usage: `/giveaway start prize duration winners` or "
+            "`<prefix>giveaway start prize duration [winners]`. "
+            "Duration examples: `30m`, `2h`, `1d`."
+        ),
     )
     @app_commands.describe(
         prize="The giveaway prize",

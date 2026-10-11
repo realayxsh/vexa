@@ -1390,6 +1390,35 @@ Reason: `{entry.reason}`\n\n''')
             await ctx.send_help(ctx.command)
             ctx.command.reset_cooldown(ctx)
 
+    @role.command(name="add")
+    @blacklist_check()
+    @ignore_check()
+    @admin_check()
+    @commands.bot_has_permissions(manage_roles=True)
+    async def add_role(self, ctx, user: discord.Member, role: discord.Role):
+        """Give a role to a member."""
+        if role.is_default() or role.managed:
+            return await ctx.send(
+                f"{e.red_cross} | That role cannot be assigned manually."
+            )
+        if role >= ctx.guild.me.top_role:
+            return await ctx.send(
+                f"{e.red_cross} | Move my highest role above {role.mention} first."
+            )
+        if ctx.author != ctx.guild.owner and role >= ctx.author.top_role:
+            return await ctx.send(
+                f"{e.red_cross} | Your highest role must be above {role.mention}."
+            )
+        if role in user.roles:
+            return await ctx.send(
+                f"{e.war} | {user.mention} already has {role.mention}."
+            )
+
+        await user.add_roles(role, reason=f"Role added by {ctx.author}")
+        await ctx.send(
+            f"{e.green_tick} | Successfully added {role.mention} to {user.mention}."
+        )
+
     @role.command()
     @commands.bot_has_permissions(manage_roles=True)
     @blacklist_check()
