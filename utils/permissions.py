@@ -52,7 +52,7 @@ def _is_server_owner(ctx) -> bool:
 
 
 def _is_coowner_or_above(ctx) -> bool:
-    if _is_server_owner(ctx):
+    if _is_server_owner(ctx) or ctx.author.id in ctx.bot.owner_ids:
         return True
     coown_id = _get_role_id(ctx.guild.id, "coown")
     return _member_has_role(ctx.author, coown_id)

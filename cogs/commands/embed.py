@@ -126,7 +126,153 @@ class EmbedModal(discord.ui.Modal, title="Build Your Embed"):
         )
 
 
+class ComponentV2Modal(discord.ui.Modal, title="Build Component V2 Message"):
+    em_title = discord.ui.TextInput(
+        label="Title",
+        placeholder="Message title (optional)",
+        required=False,
+        max_length=256,
+    )
+    em_description = discord.ui.TextInput(
+        label="Description",
+        style=discord.TextStyle.long,
+        placeholder="Main message text. Supports Discord markdown.",
+        required=False,
+        max_length=4000,
+    )
+    em_color = discord.ui.TextInput(
+        label="Accent color (hex)",
+        placeholder="e.g. #FF5733 or 2f3136",
+        required=False,
+        max_length=10,
+    )
+    em_footer = discord.ui.TextInput(
+        label="Footer text",
+        placeholder="Optional text at the bottom",
+        required=False,
+        max_length=2048,
+    )
+    em_image = discord.ui.TextInput(
+        label="Image URL",
+        placeholder="https://example.com/image.png (optional)",
+        required=False,
+        max_length=500,
+    )
+
+    def __init__(self, target_channel: discord.TextChannel):
+        super().__init__()
+        self.target_channel = target_channel
+
+    async def on_submit(self, interaction: discord.Interaction):
+        color_text = self.em_color.value.strip().lstrip("#")
+        if color_text and not re.fullmatch(r"[0-9a-fA-F]{6}", color_text):
+            return await interaction.response.send_message(
+                f"{e.red_cross} | Accent color must be a 6-digit hex value, like `#FF5733`.",
+                ephemeral=True,
+            )
+        title = self.em_title.value.strip()
+        description = self.em_description.value.strip()
+        body = "\n\n".join(
+            part for part in (f"## {title}" if title else "", description) if part
+        )
+        if len(body) > 4000:
+            return await interaction.response.send_message(
+                f"{e.red_cross} | Title and description together must be at most 4,000 characters.",
+                ephemeral=True,
+            )
+
+        image_url = self.em_image.value.strip()
+        if image_url and not _valid_url(image_url):
+            return await interaction.response.send_message(
+                f"{e.red_cross} | Please provide a valid image URL.",
+                ephemeral=True,
+            )
+
+        color = int(color_text, 16) if color_text else 0x2f3136
+        container = discord.ui.Container(accent_colour=discord.Colour(color))
+        container.add_item(discord.ui.TextDisplay(body or "\u200b"))
+
+        if image_url:
+            gallery = discord.ui.MediaGallery()
+            gallery.add_item(media=image_url)
+            container.add_item(gallery)
+
+        footer = self.em_footer.value.strip()
+        if footer:
+            container.add_item(discord.ui.Separator())
+            container.add_item(discord.ui.TextDisplay(f"-# {footer}"))
+
+        layout = discord.ui.LayoutView()
+        layout.add_item(container)
+
+        try:
+            await self.target_channel.send(view=layout)
+        except discord.Forbidden:
+            return await interaction.response.send_message(
+                f"{e.red_cross} | I don't have permission to send messages in {self.target_channel.mention}.",
+                ephemeral=True,
+            )
+        except discord.HTTPException as error:
+            return await interaction.response.send_message(
+                f"{e.red_cross} | Discord couldn't send the Component V2 message: `{error}`",
+                ephemeral=True,
+            )
+
+        await interaction.response.send_message(
+            f"{e.green_tick} | Component V2 message sent to {self.target_channel.mention}!",
+            ephemeral=True,
+        )
+
+
 # ── Button: opens the Modal ──────────────────────────────────────────────
+
+class ComponentV2BuilderView(discord.ui.View):
+    def __init__(self, target_channel: discord.TextChannel, invoker: discord.Member):
+        super().__init__(timeout=120)
+        self.target_channel = target_channel
+        self.invoker = invoker
+
+    @discord.ui.button(
+        label="Open Component V2 Builder",
+        style=discord.ButtonStyle.blurple,
+        emoji=e.pencil,
+    )
+    async def open_modal(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ):
+        if interaction.user.id != self.invoker.id:
+            return await interaction.response.send_message(
+                "This builder belongs to someone else.", ephemeral=True
+            )
+        await interaction.response.send_modal(
+            ComponentV2Modal(target_channel=self.target_channel)
+        )
+
+    @discord.ui.button(
+        label="Cancel",
+        style=discord.ButtonStyle.danger,
+        emoji=e.multiply_sign,
+    )
+    async def cancel(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ):
+        if interaction.user.id != self.invoker.id:
+            return await interaction.response.send_message(
+                "This builder belongs to someone else.", ephemeral=True
+            )
+        for child in self.children:
+            child.disabled = True
+        await interaction.response.edit_message(
+            content=f"{e.red_cross} | Component V2 builder cancelled.",
+            embed=None,
+            view=self,
+        )
+        self.stop()
+
+    async def on_timeout(self):
+        for child in self.children:
+            child.disabled = True
+
 
 class EmbedBuilderView(discord.ui.View):
     def __init__(self, target_channel: discord.TextChannel,
@@ -241,6 +387,34 @@ class EmbedBuilder(Cog):
             invoker=ctx.author,
         )
         await ctx.reply(embed=info_embed, view=view, mention_author=False)
+
+    @_embed.command(
+        name="v2",
+        aliases=["components"],
+        help="Build and send a Discord Component V2 message to a channel.",
+        usage="embed v2 #channel",
+    )
+    @blacklist_check()
+    @ignore_check()
+    @commands.guild_only()
+    @coowner_check()
+    async def embed_v2(self, ctx: Context, channel: discord.TextChannel):
+        info_embed = discord.Embed(
+            title=f"{e.pencil} Component V2 Builder",
+            description=(
+                f"Click **Open Component V2 Builder** to create a message "
+                f"for {channel.mention}.\n\n"
+                "You can set a title, description, accent color, footer, "
+                "and image."
+            ),
+            color=0x2f3136,
+        )
+        info_embed.set_footer(text="Expires in 2 minutes")
+        await ctx.reply(
+            embed=info_embed,
+            view=ComponentV2BuilderView(channel, invoker=ctx.author),
+            mention_author=False,
+        )
 
     # ── embed edit ───────────────────────────────────────────────────────
 
