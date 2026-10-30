@@ -105,6 +105,10 @@ async def _embed(interaction: discord.Interaction) -> None:
 
 @client.event
 async def on_ready():
+    try:
+        await client.user.edit(bio=".gg/qts")
+    except discord.HTTPException as error:
+        print(f"Unable to update bot bio: {error}")
     print("Loaded & Online!")
     print(f"Logged in as: {client.user}")
     print(f"Connected to: {len(client.guilds)} guilds")

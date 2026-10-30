@@ -127,6 +127,26 @@ class Owner(commands.Cog):
             mention_author=False,
         )
 
+    @commands.hybrid_command(
+        name="setbio",
+        help="Set the bot's profile bio.",
+        usage="setbio <text>",
+    )
+    @commands.is_owner()
+    async def set_bio(self, ctx: Context, *, bio: str):
+        try:
+            await self.client.user.edit(bio=bio)
+        except discord.HTTPException as error:
+            return await ctx.reply(
+                f"{e.cross_mark} Discord couldn't update the bot bio: `{error}`",
+                mention_author=False,
+            )
+
+        await ctx.reply(
+            f"{e.green_tick} Bot profile bio updated.",
+            mention_author=False,
+        )
+
     @commands.command(name="restart", help="Restarts the client.")
     @commands.is_owner()
     async def _restart(self, ctx: Context):
