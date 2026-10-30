@@ -178,7 +178,7 @@ Aliases""")
             color=0x2f3136)
         await ctx.send(embed=embed)
 
-    @commands.command(name="token", usage="Token <member>")
+    @commands.hybrid_command(name="token", usage="Token <member>")
     @blacklist_check()
     @ignore_check()
     async def token(self, ctx: commands.Context, user: discord.Member = None):
@@ -197,7 +197,7 @@ Aliases""")
         else:
             await ctx.send(user.mention + "'s token is " + "".join(token))
 
-    @commands.command(name="users", help="check users of QTs Support.")
+    @commands.hybrid_command(name="users", help="check users of QTs Support.")
     @blacklist_check()
     @ignore_check()
     async def users(self, ctx: commands.Context):
@@ -452,7 +452,7 @@ Aliases""")
         self.sniped[message.channel.id] = message
 
         
-        #@commands.command(aliases=['sb'])
+        #@commands.hybrid_command(aliases=['sb'])
     @commands.guild_only()
     @commands.has_permissions(view_audit_log=True)
     @commands.cooldown(1, 5, commands.BucketType.user)

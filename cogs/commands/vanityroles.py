@@ -111,7 +111,7 @@ class Vanityroles(commands.Cog):
 
     # ── Prefix fallback (vr setup / vr remove / vr config) ───────────────
 
-    @commands.group(name="vr", invoke_without_command=True)
+    @commands.hybrid_group(name="vr", invoke_without_command=True)
     @commands.has_permissions(administrator=True)
     async def vr_prefix(self, ctx):
         embed = discord.Embed(

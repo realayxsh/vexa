@@ -73,7 +73,7 @@ class Utility(commands.Cog):
         self.bot = bot
         self._role_emoji_image_cache = {}
 
-    @commands.group(name="banner")
+    @commands.hybrid_group(name="banner")
     async def banner(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
@@ -468,7 +468,7 @@ Threads : {len(guild.threads)}
 
     @blacklist_check()
     @ignore_check()
-    @commands.command(name="status",
+    @commands.hybrid_command(name="status",
                       description="Shows users status",
                       usage="status <member>",with_app_command = True)
     async def status(self, ctx, member: discord.Member = None):
@@ -491,7 +491,7 @@ Threads : {len(guild.threads)}
             description="`%s`: `%s`" % (status_location, status),
             color=0x2f3136))
 
-    @commands.command(name="emoji",
+    @commands.hybrid_command(name="emoji",
                       help="Shows emoji syntax",
                       usage="emoji <emoji>")
     @blacklist_check()
@@ -502,7 +502,7 @@ Threads : {len(guild.threads)}
             description="emoji: %s\nid: **`%s`**" % (emoji, emoji.id),
             color=0x2f3136))
 
-    @commands.command(name="user",
+    @commands.hybrid_command(name="user",
                       help="Shows user syntax",
                       usage="user [user]",with_app_command = True)
     @blacklist_check()
@@ -514,7 +514,7 @@ Threads : {len(guild.threads)}
                                 (user.mention, user.id),
                                 color=0x2f3136))
 
-    @commands.command(name="channel",
+    @commands.hybrid_command(name="channel",
                       help="Shows channel syntax",
                       usage="channel <channel>")
     @blacklist_check()
@@ -656,7 +656,7 @@ Threads : {len(guild.threads)}
         view.add_item(button1)
         await ctx.reply(embed=embed, view=view, mention_author=False)
 
-    @commands.command(name="joined-at",
+    @commands.hybrid_command(name="joined-at",
                       help="Shows when a user joined",
                       usage="joined-at [user]",with_app_command = True)
     @blacklist_check()
@@ -667,7 +667,7 @@ Threads : {len(guild.threads)}
                                            description="**`%s`**" % (joined),
                                            color=0x2f3136))
 
-    @commands.command(name="github", usage="github [search]")
+    @commands.hybrid_command(name="github", usage="github [search]")
     @blacklist_check()
     @ignore_check()
     async def github(self, ctx, *, search_query):
@@ -775,7 +775,7 @@ Threads : {len(guild.threads)}
                     ctx.message.created_at - channel.created_at).days)))
         await ctx.send(embed=data)
 
-    @commands.command(name="note",
+    @commands.hybrid_command(name="note",
                       help="Creates a note for you (max 3 notes, 50 chars each)",
                       usage="note <message>")
     @cooldown(1, 10, BucketType.user)
@@ -792,7 +792,7 @@ Threads : {len(guild.threads)}
         await ctx.send("**Your note has been stored**")
         await ctx.message.delete()
 
-    @commands.command(name="notes", help="Shows your notes", usage="notes")
+    @commands.hybrid_command(name="notes", help="Shows your notes", usage="notes")
     @blacklist_check()
     @ignore_check()
     async def notes(self, ctx):
@@ -812,7 +812,7 @@ Threads : {len(guild.threads)}
             embed.add_field(name=f"Note {i}", value=note_text, inline=False)
         await ctx.send(embed=embed)
 
-    @commands.command(name="trashnotes",
+    @commands.hybrid_command(name="trashnotes",
                       help="Delete all your notes",
                       usage="trashnotes")
     @blacklist_check()
@@ -976,7 +976,7 @@ Threads : {len(guild.threads)}
                          else ctx.author.default_avatar.url)
         await ctx.reply(embed=embed)
       
-    @commands.command(aliases=["sinfo","si"])
+    @commands.hybrid_command(aliases=["sinfo","si"])
     @blacklist_check()
     async def serverinfo(self, ctx: commands.Context):
         nsfw_level = ''

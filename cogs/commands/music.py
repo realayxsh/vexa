@@ -628,7 +628,7 @@ class Music(commands.Cog):
     async def on_wavelink_node_ready(self, node: wavelink.Node):
         print(f"Node <{node.identifier}> is now Ready!")
 
-    @commands.command(name="play", usage="play <search>", aliases=[("p")])
+    @commands.hybrid_command(name="play", usage="play <search>", aliases=[("p")])
     @blacklist_check()
     @ignore_check()
     async def play(self, ctx: commands.Context, *, search: str):
@@ -837,7 +837,7 @@ class Music(commands.Cog):
                 view = Buttons()
                 await ctx.send(embed=mbed, view=view)
 
-    @commands.command(name="connect",
+    @commands.hybrid_command(name="connect",
                       help="connect to your channel .",
                       aliases=["join", "j", "jvc"],
                       usage="connect [channel]")
@@ -873,7 +873,7 @@ class Music(commands.Cog):
             color=0x2f3136)
         await ctx.send(embed=sc)
 
-    @commands.command(name="disconnect",
+    @commands.hybrid_command(name="disconnect",
                       usage="disconnect [channel]",
                       aliases=[("dc")])
     @blacklist_check()
@@ -900,7 +900,7 @@ class Music(commands.Cog):
 
         await ctx.send(embed=hacker1)
 
-    @commands.command(name="stop", usage="stop")
+    @commands.hybrid_command(name="stop", usage="stop")
     @blacklist_check()
     @ignore_check()
     async def stop_command(self, ctx: commands.Context):
@@ -934,7 +934,7 @@ class Music(commands.Cog):
             
             return await ctx.reply(embed=hacker2)
 
-    @commands.command(name="skip", usage="skip", aliases=[("s")])
+    @commands.hybrid_command(name="skip", usage="skip", aliases=[("s")])
     @blacklist_check()
     @ignore_check()
     async def skip_command(self, ctx: commands.Context):
@@ -963,7 +963,7 @@ class Music(commands.Cog):
                 color=0x2f3136)
             return await ctx.reply(embed=hacker2)
 
-    @commands.command(name="pause", usage="pause")
+    @commands.hybrid_command(name="pause", usage="pause")
     @blacklist_check()
     @ignore_check()
     async def pause_command(self, ctx: commands.Context):
@@ -1004,7 +1004,7 @@ class Music(commands.Cog):
 
             return await ctx.reply(embed=hacker3)
 
-    @commands.command(name="resume", usage="resume")
+    @commands.hybrid_command(name="resume", usage="resume")
     @blacklist_check()
     @ignore_check()
     async def resume_command(self, ctx: commands.Context):
@@ -1036,7 +1036,7 @@ class Music(commands.Cog):
             
             return await ctx.reply(embed=hacker3)
 
-    @commands.group(name="bassboost",
+    @commands.hybrid_group(name="bassboost",
                     invoke_without_command=True,
                     aliases=['bass'])
     @blacklist_check()
@@ -1100,7 +1100,7 @@ class Music(commands.Cog):
 
         await ctx.send(embed=hacker4)
 
-    @commands.command(name="volume", usage="volume <vol>", aliases=[("vol")])
+    @commands.hybrid_command(name="volume", usage="volume <vol>", aliases=[("vol")])
     @commands.guild_only()
     @blacklist_check()
     @ignore_check()
@@ -1134,7 +1134,7 @@ class Music(commands.Cog):
 
         await ctx.send(embed=hacker4)
 
-    @commands.command(name="nowplaying", usage="nowplaying", aliases=[("now")])
+    @commands.hybrid_command(name="nowplaying", usage="nowplaying", aliases=[("now")])
     @blacklist_check()
     @ignore_check()
     async def playing(self, ctx):
@@ -1188,7 +1188,7 @@ class Music(commands.Cog):
         em.timestamp = discord.utils.utcnow()
         return await ctx.send(embed=em)
 
-    @commands.command(name="shuffle", usage="shuffle", aliases=[("shuff")])
+    @commands.hybrid_command(name="shuffle", usage="shuffle", aliases=[("shuff")])
     @blacklist_check()
     @ignore_check()
     async def shuffle(self, ctx):
@@ -1219,7 +1219,7 @@ class Music(commands.Cog):
             color=0x2f3136)
         await ctx.send(embed=hacker2)
 
-    @commands.command(name="pull", usage="pull <index>")
+    @commands.hybrid_command(name="pull", usage="pull <index>")
     @blacklist_check()
     @ignore_check()
     async def pull(self, ctx, index: int):
@@ -1253,7 +1253,7 @@ class Music(commands.Cog):
             color=0x2f3136)
         await ctx.send(embed=hacker3)
 
-    @commands.group(name="queue", invoke_without_command=True, aliases=['q'])
+    @commands.hybrid_group(name="queue", invoke_without_command=True, aliases=['q'])
     @blacklist_check()
     @ignore_check()
     async def _queue(self, ctx):
@@ -1328,7 +1328,7 @@ class Music(commands.Cog):
                            icon_url=f"{ctx.author.avatar}")
         return await ctx.send(embed=hacker3)
 
-    @commands.command(name="seek", aliases=["sk"], usage="seek")
+    @commands.hybrid_command(name="seek", aliases=["sk"], usage="seek")
     @blacklist_check()
     @ignore_check()
     async def seek_command(self, ctx, position: str):

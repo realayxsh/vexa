@@ -15,7 +15,7 @@ class Voice(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.group(name="voice", invoke_without_command=True, aliases=['vc'])
+    @commands.hybrid_group(name="voice", invoke_without_command=True, aliases=['vc'])
     @blacklist_check()
     @ignore_check()
     async def vc(self, ctx: commands.Context):
@@ -442,7 +442,7 @@ class Voice(commands.Cog):
             hacker1.set_thumbnail(url=f"{ctx.author.avatar}")
             await ctx.reply(embed=hacker1)
 
-    @commands.group(name="vcrole", invoke_without_command=True)
+    @commands.hybrid_group(name="vcrole", invoke_without_command=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.max_concurrency(1, per=commands.BucketType.default, wait=False)
     @commands.guild_only()

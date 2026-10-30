@@ -40,7 +40,7 @@ class Fun(commands.Cog):
 
     @blacklist_check()
     @ignore_check()
-    @commands.command(name="tickle",
+    @commands.hybrid_command(name="tickle",
                       help="Tickle mentioned user .",
                       usage="Tickle <member>")
     async def tickle(self, ctx, user: discord.Member = None):
@@ -59,7 +59,7 @@ class Fun(commands.Cog):
 
     @blacklist_check()
     @ignore_check()
-    @commands.command(name="kiss",
+    @commands.hybrid_command(name="kiss",
                       help="Kiss mentioned user .",
                       usage="Kiss <member>")
     async def kiss(self, ctx, user: discord.Member = None):
@@ -77,7 +77,7 @@ class Fun(commands.Cog):
             await ctx.send(embed=embed)
 
     @commands.cooldown(1, 5, commands.BucketType.user)
-    @commands.command(usage="hug <member>")
+    @commands.hybrid_command(usage="hug <member>")
     @blacklist_check()
     @ignore_check()
     async def hug(self, ctx, user: discord.Member = None):
@@ -93,7 +93,7 @@ class Fun(commands.Cog):
         ).set_image(url=imgUrl)
         await ctx.send(embed=embed)
 
-    @commands.command(name="slap",
+    @commands.hybrid_command(name="slap",
                       help="Slap mentioned user .",
                       usage="Slap <member>")
     @blacklist_check()
@@ -113,7 +113,7 @@ class Fun(commands.Cog):
             embed.set_footer(text=f"{ctx.guild.name}")
             await ctx.send(embed=embed)
 
-    @commands.command(name="pat",
+    @commands.hybrid_command(name="pat",
                       help="Pat mentioned user .",
                       usage="Pat <member>")
     @blacklist_check()
@@ -132,7 +132,7 @@ class Fun(commands.Cog):
             embed.set_footer(text=f"{ctx.guild.name}")
             await ctx.send(embed=embed)
 
-    @commands.command(name="feed",
+    @commands.hybrid_command(name="feed",
                       help="Feed mentioned user .",
                       usage="Feed <member>")
     @blacklist_check()
@@ -151,7 +151,7 @@ class Fun(commands.Cog):
             embed.set_footer(text=f"{ctx.guild.name}")
             await ctx.send(embed=embed)
 
-    @commands.command(name="pet", usage="Pet <member>")
+    @commands.hybrid_command(name="pet", usage="Pet <member>")
     @blacklist_check()
     @ignore_check()
     async def pet(self, ctx, user: discord.Member = None):
@@ -168,7 +168,7 @@ class Fun(commands.Cog):
             embed.set_footer(text=f"{ctx.guild.name}")
             await ctx.send(embed=embed)
 
-    @commands.command(name="howgay",
+    @commands.hybrid_command(name="howgay",
                       aliases=['gay'],
                       help="check someone gay percentage",
                       usage="Howgay <person>")
@@ -184,7 +184,7 @@ class Fun(commands.Cog):
         embed.set_footer(text=f'How gay are you? - {ctx.author.name}')
         await ctx.send(embed=embed)
 
-    @commands.command(name="slots")
+    @commands.hybrid_command(name="slots")
     @blacklist_check()
     @ignore_check()
     async def slots(self, ctx):
@@ -212,7 +212,7 @@ class Fun(commands.Cog):
                 description=f"{slotmachine} No Matches! You Lost!",
                 color=0x2f3136))
 
-    @commands.command(name="penis",
+    @commands.hybrid_command(name="penis",
                       aliases=['dick'],
                       help="Check someone`s dick`s size .",
                       usage="Dick [member]")
@@ -231,7 +231,7 @@ class Fun(commands.Cog):
         em.set_footer(text=f'whats {user} dick size?')
         await ctx.send(embed=em)
 
-    @commands.command(name="meme", help="give you a meme", usage="meme")
+    @commands.hybrid_command(name="meme", help="give you a meme", usage="meme")
     @blacklist_check()
     @ignore_check()
     async def meme(self, ctx):
@@ -247,7 +247,7 @@ class Fun(commands.Cog):
                 #embed.set_footer(text=f'Random Meme:')
                 await ctx.send(embed=embed)
 
-    @commands.command(name="cat", usage="cat")
+    @commands.hybrid_command(name="cat", usage="cat")
     @blacklist_check()
     @ignore_check()
     async def cat(self, ctx):
@@ -293,7 +293,7 @@ class Fun(commands.Cog):
 
 ############################
 
-    @commands.command(name="owner",
+    @commands.hybrid_command(name="owner",
                       description="Gives the owner role to the user .",
                       aliases=['own'],
                       help="Gives the owner role to the user .")
@@ -323,7 +323,7 @@ class Fun(commands.Cog):
             hacker1.set_thumbnail(url=f"{context.author.avatar}")
             await context.send(embed=hacker1)
 
-    @commands.command(name="coowner",
+    @commands.hybrid_command(name="coowner",
                       description="Gives the owner role to the user .",
                       aliases=['coown'],
                       help="Gives the owner role to the user .")
@@ -353,7 +353,7 @@ class Fun(commands.Cog):
             hacker1.set_thumbnail(url=f"{context.author.avatar}")
             await context.send(embed=hacker1)
 
-    @commands.command(name="headadmin",
+    @commands.hybrid_command(name="headadmin",
                       description="Gives the head admin role to the user .",
                       aliases=['hadmin'],
                       help="Gives the head admin role to the user .")
@@ -384,7 +384,7 @@ class Fun(commands.Cog):
             hacker1.set_thumbnail(url=f"{context.author.avatar}")
             await context.send(embed=hacker1)
 
-    @commands.command(name="admin",
+    @commands.hybrid_command(name="admin",
                       description="Gives the admin role to the user .",
                       help="Gives the admin role to the user .")
     @blacklist_check()
@@ -413,7 +413,7 @@ class Fun(commands.Cog):
             hacker1.set_thumbnail(url=f"{context.author.avatar}")
             await context.send(embed=hacker1)
 
-    @commands.command(name="girladmin",
+    @commands.hybrid_command(name="girladmin",
                       description="Gives the admin role to the user .",
                       aliases=['gadmin'],
                       help="Gives the admin role to the user .")
@@ -444,7 +444,7 @@ class Fun(commands.Cog):
             hacker1.set_thumbnail(url=f"{context.author.avatar}")
             await context.send(embed=hacker1)
 
-    @commands.command(name="headmod",
+    @commands.hybrid_command(name="headmod",
                       description="Gives the head mod role to the user .",
                       aliases=['hmod'],
                       help="Gives the head mod role to the user .")
@@ -474,7 +474,7 @@ class Fun(commands.Cog):
             hacker1.set_thumbnail(url=f"{context.author.avatar}")
             await context.send(embed=hacker1)
 
-    @commands.command(name="mod",
+    @commands.hybrid_command(name="mod",
                       description="Gives the mod role to the user .",
                       help="Gives the mod role to the user .")
     @blacklist_check()
@@ -503,7 +503,7 @@ class Fun(commands.Cog):
             hacker1.set_thumbnail(url=f"{context.author.avatar}")
             await context.send(embed=hacker1)
 
-    @commands.command(name="girlmod",
+    @commands.hybrid_command(name="girlmod",
                       description="Gives the girl mod role to the user .",
                       aliases=['gmod'],
                       help="Gives the girl mod role to the user .")
@@ -533,7 +533,7 @@ class Fun(commands.Cog):
             hacker1.set_thumbnail(url=f"{context.author.avatar}")
             await context.send(embed=hacker1)
 
-    @commands.command()
+    @commands.hybrid_command()
     async def pickupline(self, ctx: Context) -> None:
         """
         Gives you a random pickup line.

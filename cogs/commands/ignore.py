@@ -11,7 +11,7 @@ class Ignore(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.group(name="ignore", invoke_without_command=True)
+    @commands.hybrid_group(name="ignore", invoke_without_command=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.max_concurrency(1, per=commands.BucketType.default, wait=False)
     @commands.guild_only()

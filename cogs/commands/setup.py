@@ -28,7 +28,7 @@ class Setup(Cog):
 
     # ── set commands ─────────────────────────────────────────────────────
 
-    @commands.command(
+    @commands.hybrid_command(
         name="setcoowner",
         aliases=["setco", "setcoown"],
         help="Set the Co Owner role. Co Owners can ban, kick, mute and use all mod commands.",
@@ -47,7 +47,7 @@ class Setup(Cog):
         embed.set_author(name=str(ctx.author), icon_url=ctx.author.display_avatar.url)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(
+    @commands.hybrid_command(
         name="setadmin",
         aliases=["setadm"],
         help="Set the Admin role. Admins can give and remove server roles from members.",
@@ -66,7 +66,7 @@ class Setup(Cog):
         embed.set_author(name=str(ctx.author), icon_url=ctx.author.display_avatar.url)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(
+    @commands.hybrid_command(
         name="setmod",
         aliases=["setmoderator"],
         help="Set the Mod role for reference in the server.",
@@ -86,7 +86,7 @@ class Setup(Cog):
 
     # ── reset commands ───────────────────────────────────────────────────
 
-    @commands.command(
+    @commands.hybrid_command(
         name="removecoowner",
         aliases=["delcoowner", "resetcoown"],
         help="Remove the configured Co Owner role.",
@@ -104,7 +104,7 @@ class Setup(Cog):
         embed.set_author(name=str(ctx.author), icon_url=ctx.author.display_avatar.url)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command(
+    @commands.hybrid_command(
         name="removeadmin",
         aliases=["deladmin", "resetadmin"],
         help="Remove the configured Admin role.",
@@ -171,7 +171,7 @@ class Setup(Cog):
 
     # ── status command ───────────────────────────────────────────────────
 
-    @commands.command(
+    @commands.hybrid_command(
         name="permissions",
         aliases=["perms", "rolesconfig", "botperms"],
         help="Shows the current permission role configuration for this server.",

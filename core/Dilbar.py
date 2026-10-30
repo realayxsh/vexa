@@ -115,14 +115,14 @@ class Dilbar(commands.AutoShardedBot):
         with open('info.json', 'r') as f:
             p = json.load(f)
         if message.author.id in p["np"]:
-            return commands.when_mentioned_or('-', '')(self, message)
+            return commands.when_mentioned_or('$', '')(self, message)
         else:
             if message.guild:
                 data = getConfig(message.guild.id)
                 prefix = data["prefix"]
                 return commands.when_mentioned_or(prefix)(self, message)
             else:
-                return commands.when_mentioned_or('-')(self, message)
+                return commands.when_mentioned_or('$')(self, message)
 
     async def on_message_edit(self, before, after):
         ctx: Context = await self.get_context(after, cls=Context)

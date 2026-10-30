@@ -112,7 +112,7 @@ class Moderation(commands.Cog):
             return -2
         return val * time_dict[unit]
 
-    @commands.command(name="unlockall",
+    @commands.hybrid_command(name="unlockall",
                       help="Unlocks down the server.",
                       usage="unlockall")
     @blacklist_check()
@@ -149,7 +149,7 @@ class Moderation(commands.Cog):
         else:
             pass
 
-    @commands.command(name="lockall",
+    @commands.hybrid_command(name="lockall",
                       help="Locks down the server.",
                       usage="lockall")
     @blacklist_check()
@@ -183,7 +183,7 @@ class Moderation(commands.Cog):
         else:
             pass
 
-    @commands.command(
+    @commands.hybrid_command(
         name="fuckban",
         help=
         "Somebody is breaking rules again and again | ban him from the server as punishment",
@@ -210,7 +210,7 @@ class Moderation(commands.Cog):
             await ctx.reply(embed=discord.Embed(
                 description=f" I could not Hackban that ID\n", color=0x2f3136))
 
-    @commands.command(name="give",
+    @commands.hybrid_command(name="give",
                       help="Gives the mentioned user a role.",
                       usage="give <user> <role>",
                       aliases=["addrole"])
@@ -246,7 +246,7 @@ class Moderation(commands.Cog):
                             value=f"{role} has been given to {member.name}")
             await ctx.send(embed=embed)
 
-    @commands.command(name="hideall", help="Hides all the channels .")
+    @commands.hybrid_command(name="hideall", help="Hides all the channels .")
     @blacklist_check()
     @ignore_check()
     @commands.has_permissions(manage_channels=True)
@@ -263,7 +263,7 @@ class Moderation(commands.Cog):
         for x in ctx.guild.channels:
             await x.set_permissions(ctx.guild.default_role, view_channel=False)
 
-    @commands.command(name="unhideall", help="Unhides all the channels .")
+    @commands.hybrid_command(name="unhideall", help="Unhides all the channels .")
     @blacklist_check()
     @ignore_check()
     @commands.has_permissions(manage_channels=True)
@@ -422,7 +422,7 @@ Reason: `{entry.reason}`\n\n''')
         hacker.set_thumbnail(url=f"{ctx.author.avatar}")
         await ctx.send(embed=hacker)
 
-    @commands.group(invoke_without_command=True,
+    @commands.hybrid_group(invoke_without_command=True,
                     help="Clears the messages",
                     usage="purge <amount>")
     @commands.has_guild_permissions(manage_messages=True)
@@ -923,7 +923,7 @@ Reason: `{entry.reason}`\n\n''')
         hacker.set_thumbnail(url=f"{ctx.author.avatar}")
         await ctx.send(embed=hacker)
 
-    @commands.group(aliases=["c"],
+    @commands.hybrid_group(aliases=["c"],
                     invoke_without_command=True,
                     help="Clears the messages")
     @blacklist_check()
@@ -1388,7 +1388,7 @@ Reason: `{entry.reason}`\n\n''')
             view = Paginator(ctx, embeds)
             await ctx.reply(embed=embeds[0], view=view)
 
-    @commands.group(name="role", invoke_without_command=True)
+    @commands.hybrid_group(name="role", invoke_without_command=True)
     @blacklist_check()
     @ignore_check()
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -1602,7 +1602,7 @@ Reason: `{entry.reason}`\n\n''')
 
             await ctx.send(embed=hacker5)
           
-    @commands.command()
+    @commands.hybrid_command()
     @coowner_check()
     async def roleallhumans(self,ctx,role:discord.Role):
         ''' Gives all the humans any role '''
@@ -1612,7 +1612,7 @@ Reason: `{entry.reason}`\n\n''')
             await h.add_roles(role)
         await ctx.reply(f'{e.green_tick} | Added mentioned role to all members')
 
-    @commands.command()
+    @commands.hybrid_command()
     @coowner_check()
     async def roleallbots(self,ctx,role:discord.Role):
         ''' Give all bots any role '''
@@ -1622,7 +1622,7 @@ Reason: `{entry.reason}`\n\n''')
             await h.add_roles(role)
         await ctx.reply(f'{e.green_tick} | Added mentioned role to all bots')
 
-    @commands.command()
+    @commands.hybrid_command()
     @coowner_check()
     async def removeallhumans(self,ctx,role:discord.Role):
         ''' Removes a role from all human members '''
@@ -1632,7 +1632,7 @@ Reason: `{entry.reason}`\n\n''')
             await h.remove_roles(role)
         await ctx.reply(f'{e.green_tick} | Removed mentioned role from all members')
 
-    @commands.command()
+    @commands.hybrid_command()
     @coowner_check()
     async def removeallbots(self,ctx,role:discord.Role):
         ''' Removes a role from all the bots '''

@@ -29,7 +29,7 @@ class Welcomer(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.group(name="autorole", invoke_without_command=True)
+    @commands.hybrid_group(name="autorole", invoke_without_command=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.max_concurrency(1, per=commands.BucketType.default, wait=False)
     @blacklist_check()
@@ -404,7 +404,7 @@ class Welcomer(commands.Cog):
 
             await ctx.send(embed=hacker5)
 
-    @commands.group(name="greet",
+    @commands.hybrid_group(name="greet",
                     aliases=['welcome'],
                     invoke_without_command=True)
     @blacklist_check()

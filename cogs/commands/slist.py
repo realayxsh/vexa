@@ -5,7 +5,7 @@ from reactionmenu import ViewMenu, ViewButton
 from utils.Tools import *
 from utils.emojis import e
 
-@commands.command(name="slist", aliases=["serverlist"])
+@commands.hybrid_command(name="slist", aliases=["serverlist"])
 @commands.guild_only()
 async def server_list(self, ctx):
     servers = sorted(ctx.bot.guilds, key=lambda s: s.member_count, reverse=True)

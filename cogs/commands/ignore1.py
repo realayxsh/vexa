@@ -15,7 +15,7 @@ class devansh12(commands.Cog):
 		      description = ""
 		      return emoji, label, description
 
-    @commands.group()
+    @commands.hybrid_group()
     async def __Ignore__(self, ctx: commands.Context):
         """`ignore` , `ignore channel add` , `ignore channel remove`"""
        

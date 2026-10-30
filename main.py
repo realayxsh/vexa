@@ -197,7 +197,7 @@ async def on_command_completion(context: Context) -> None:
             print("PERFECTLY FINE")
 
 
-@client.command()
+@client.hybrid_command()
 async def makeembed(ctx, *, description):
     if not description:
         await ctx.channel.send(
@@ -213,7 +213,7 @@ async def makeembed(ctx, *, description):
     await ctx.send(embed=embed)
 
 
-@client.command()
+@client.hybrid_command()
 async def spotify(ctx, user: discord.Member = None):
     if user is None:
         user = ctx.author

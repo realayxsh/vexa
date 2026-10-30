@@ -12,14 +12,14 @@ class Encryption(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.group()
+    @commands.hybrid_group()
     async def encode(self, ctx):
         """ All encode methods """
         if ctx.invoked_subcommand is None:
             help_cmd = self.bot.get_command("help")
             await ctx.invoke(help_cmd, "encode")
 
-    @commands.group()
+    @commands.hybrid_group()
     async def decode(self, ctx):
         """ All decode methods """
         if ctx.invoked_subcommand is None:
@@ -139,7 +139,7 @@ class Encryption(commands.Cog):
         except Exception:
             await ctx.send("Invalid ASCII85...")
 
-    @commands.command()
+    @commands.hybrid_command()
     async def password(self, ctx):
         """ Generates a random password string for you """
         if hasattr(ctx, "guild") and ctx.guild is not None:

@@ -70,7 +70,7 @@ def getConfig(guildID):
         data = json.load(config)
     if str(guildID) not in data["guilds"]:
         defaultConfig = {
-            "prefix": "-",
+            "prefix": "$",
             "staff": None,
             "vip": None,
             "girl": None,

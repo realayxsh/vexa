@@ -16,7 +16,7 @@ class Owner(commands.Cog):
     def __init__(self, client):
         self.client = client
       
-    @commands.command(name="slist")
+    @commands.hybrid_command(name="slist")
     @commands.is_owner()
     async def slist(self, ctx):
         devansh37 = ([devansh for devansh in self.client.guilds])
@@ -40,7 +40,7 @@ class Owner(commands.Cog):
 
 
 
-    @commands.command(name="say", help="Make the bot send a message in a channel.", usage="say <#channel> <message>")
+    @commands.hybrid_command(name="say", help="Make the bot send a message in a channel.", usage="say <#channel> <message>")
     @commands.is_owner()
     async def say(self, ctx, channel: discord.TextChannel, *, message: str):
         try:
@@ -147,13 +147,13 @@ class Owner(commands.Cog):
             mention_author=False,
         )
 
-    @commands.command(name="restart", help="Restarts the client.")
+    @commands.hybrid_command(name="restart", help="Restarts the client.")
     @commands.is_owner()
     async def _restart(self, ctx: Context):
         await ctx.reply("Restarting!")
         restart_program()
       
-    @commands.command(name="sync", help="Syncs all database.")
+    @commands.hybrid_command(name="sync", help="Syncs all database.")
     @commands.is_owner()
     async def _sync(self, ctx):
         await ctx.reply("Syncing...", mention_author=False)
@@ -166,7 +166,7 @@ class Owner(commands.Cog):
                 with open('config.json', 'w') as f:
                     json.dump(data, f, indent=4)
 
-    @commands.group(name="blacklist",
+    @commands.hybrid_group(name="blacklist",
                     help="let's you add someone in blacklist",
                     aliases=["bl"])
     @commands.is_owner()
@@ -244,7 +244,7 @@ class Owner(commands.Cog):
             embed.set_thumbnail(url=f"{self.client.user.display_avatar.url}")
             await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.group(
+    @commands.hybrid_group(
         name="np",
         aliases=["noprefix", "no-prefix"],
         help="Allows you to add someone in no prefix list (owner only command)"
@@ -424,7 +424,7 @@ class Owner(commands.Cog):
             ephemeral=True
         )
 
-    @commands.command()
+    @commands.hybrid_command()
     @commands.is_owner()
     async def dm(self, ctx, user: discord.User, *, message: str):
         """ DM the user of your choice """
@@ -436,7 +436,7 @@ class Owner(commands.Cog):
 
 
 
-    @commands.group()
+    @commands.hybrid_group()
     @commands.is_owner()
     async def change(self, ctx):
         if ctx.invoked_subcommand is None:
@@ -458,7 +458,7 @@ class Owner(commands.Cog):
 
 
 
-    @commands.command()
+    @commands.hybrid_command()
     @commands.is_owner()
     async def globalban(self, ctx, *, user: discord.User = None):
         if user is None:

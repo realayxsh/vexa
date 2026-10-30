@@ -332,7 +332,7 @@ class EmbedBuilder(Cog):
 
     # ── main command ────────────────────────────────────────────────────
 
-    @commands.group(
+    @commands.hybrid_group(
         name="embed",
         aliases=["em"],
         invoke_without_command=True,

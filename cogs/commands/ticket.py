@@ -58,10 +58,10 @@ class Ticket(commands.Cog):
 
 
   
-    @commands.group(name="Ticket", description="Ticket Setup")
+    @commands.hybrid_group(name="Ticket", description="Ticket Setup")
     async def ticket(self, ctx: commands.Context):
         ...
-    @commands.command()
+    @commands.hybrid_command()
     @commands.has_permissions(manage_guild=True)
     async def sendpanel(self, ctx: commands.Context):
         embed = discord.Embed(title=f'Ticket', description=f'>>> To create a ticket click the {e.incoming_mail} button.', color=0x50101)

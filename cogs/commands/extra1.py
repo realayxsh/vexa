@@ -15,6 +15,6 @@ class devansh2(commands.Cog):
 		      description = ""
 		      return emoji, label, description
 
-    @commands.group()
+    @commands.hybrid_group()
     async def __Utility__(self, ctx: commands.Context):
         """`serverinfo` , `userinfo` , `roleinfo` , `botinfo` , `status` , `emoji` , `user` , `role` , `channel` , `boosts`, `emoji-add` , `removeemoji` , `unbanall` ,  `joined-at` , `ping` , `github` , `vcinfo` , `channelinfo` , `note` , `notes` , `trashnotes` , `badges` , `ignore` , `ignore channel` , `ignore channel add` , `ignore channel remove` , `banner user` , `banner server`"""
