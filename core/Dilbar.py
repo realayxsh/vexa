@@ -90,7 +90,7 @@ class Dilbar(commands.AutoShardedBot):
         await self.change_presence(status=discord.Status.idle,
                                    activity=discord.Activity(
                                        type=discord.ActivityType.listening,
-                                       name='discord.gg/yawr'))
+                                       name='discord.gg/qts'))
 
 
     async def send_raw(self, channel_id: int, content: str,

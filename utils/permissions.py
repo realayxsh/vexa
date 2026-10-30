@@ -171,7 +171,7 @@ async def global_permission_check(ctx) -> bool:
     if (
         getattr(ctx.cog, "qualified_name", None) == "Moderation"
         and ctx.command is not None
-        and ctx.command.qualified_name in {"role add", "kick", "ban"}
+        and ctx.command.qualified_name in {"role", "role add", "kick", "ban"}
         and ctx.author.guild_permissions.manage_roles
     ):
         return True

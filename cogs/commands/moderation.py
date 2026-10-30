@@ -1394,9 +1394,41 @@ Reason: `{entry.reason}`\n\n''')
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.max_concurrency(1, per=commands.BucketType.default, wait=False)
     @commands.guild_only()
-    @coowner_check()
+    @commands.bot_has_permissions(manage_roles=True)
+    @commands.check_any(
+        coowner_check(),
+        commands.has_permissions(manage_roles=True),
+    )
     @blacklist_check()
-    async def role(self, ctx):
+    async def role(
+        self,
+        ctx,
+        user: typing.Optional[discord.Member] = None,
+        role: typing.Optional[discord.Role] = None,
+    ):
+        if user is not None or role is not None:
+            if user is None or role is None:
+                return await ctx.send(
+                    f"{e.red_cross} | Usage: `{ctx.prefix}role @user @role`."
+                )
+            if role.is_default() or role.managed:
+                return await ctx.send(
+                    f"{e.red_cross} | That role cannot be assigned manually."
+                )
+            if role >= ctx.guild.me.top_role:
+                return await ctx.send(
+                    f"{e.red_cross} | Move my highest role above {role.mention} first."
+                )
+            if role in user.roles:
+                return await ctx.send(
+                    f"{e.war} | {user.mention} already has {role.mention}."
+                )
+
+            await user.add_roles(role, reason=f"Role added by {ctx.author}")
+            return await ctx.send(
+                f"{e.green_tick} | Successfully added {role.mention} to {user.mention}."
+            )
+
         if ctx.subcommand_passed is None:
             await ctx.send_help(ctx.command)
             ctx.command.reset_cooldown(ctx)
