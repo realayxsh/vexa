@@ -74,12 +74,12 @@ def build_inventory():
 
     content = f"""<!doctype html><html lang="en"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Yawr Support — Complete Emoji List</title>
+<title>QTs Support — Complete Emoji List</title>
 <style>body{{font:16px system-ui;margin:32px auto;max-width:1100px;padding:0 20px;
 color:#20242c}}table{{border-collapse:collapse;width:100%;margin:24px 0}}
 td,th{{padding:10px;border:1px solid #ddd;text-align:left;overflow-wrap:anywhere}}
 th{{background:#f2f4f8}}code{{white-space:pre-wrap}}h2{{margin-top:36px}}</style>
-<h1>Yawr Support — Complete Emoji List</h1>
+<h1>QTs Support — Complete Emoji List</h1>
 <p>Edit the central entries in <code>utils/emojis.py</code>.
 Animated replacements use <code>&lt;a:emoji_name:emoji_id&gt;</code>.
 Use the actual ID of an animated emoji your bot can access; adding “a” to a static

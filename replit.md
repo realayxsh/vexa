@@ -1,8 +1,8 @@
-# Yawr Support — Discord Bot
+# QTs Support — Discord Bot
 
 A Discord bot built with discord.py 2.x, with moderation, welcome messages, voice moderation, server role management, and admin utilities. Anti-Nuke and Automod (anti-spam, anti-link, and mass-ping protection) have been removed; existing JSON settings are retained.
 
-The displayed bot name is **Yawr Support**. Keep internal `Dilbar` class and module names for compatibility. The Discord account username is managed separately in Discord; changing source labels does not rename that account. Leave the imported project stopped unless the user asks to run it.
+The displayed bot name is **QTs Support**. Keep internal `Dilbar` class and module names for compatibility. The Discord account username is managed separately in Discord; changing source labels does not rename that account. Leave the imported project stopped unless the user asks to run it.
 
 ## Run & Operate
 
@@ -64,7 +64,7 @@ In Replit, add `TOKEN` in Tools > Secrets. For local runs, create a `.env` file 
 
 ```ini
 [Unit]
-Description=Yawr Support Discord Bot
+Description=QTs Support Discord Bot
 After=network.target
 
 [Service]

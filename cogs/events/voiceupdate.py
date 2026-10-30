@@ -27,11 +27,11 @@ class Vcroles2(Cog):
                 if not before.channel and after.channel:
                     r = data["vcrole"]["bots"]
                     br = get(member.guild.roles, id=r)
-                    await member.add_roles(br, reason="Yawr Support | VC Roles (Joined VC)")
+                    await member.add_roles(br, reason="QTs Support | VC Roles (Joined VC)")
                 elif before.channel and not after.channel:
                     r1 = data["vcrole"]["bots"]
                     br1 = get(member.guild.roles, id=r1)
-                    await member.remove_roles(br1, reason="Yawr Support | VC Roles (Left VC)")
+                    await member.remove_roles(br1, reason="QTs Support | VC Roles (Left VC)")
         elif member.bot != True:
             if data["vcrole"]["humans"] == "":
                 return
@@ -39,8 +39,8 @@ class Vcroles2(Cog):
                 if not before.channel and after.channel:
                     r2 = data["vcrole"]["humans"]
                     br2 = get(member.guild.roles, id=r2)
-                    await member.add_roles(br2, reason="Yawr Support | VC Roles (Joined VC)")
+                    await member.add_roles(br2, reason="QTs Support | VC Roles (Joined VC)")
                 elif before.channel and not after.channel:
                     r3 = data["vcrole"]["humans"]
                     br3 = get(member.guild.roles, id=r3)
-                    await member.remove_roles(br3, reason="Yawr Support | VC Roles (Left VC)")
+                    await member.remove_roles(br3, reason="QTs Support | VC Roles (Left VC)")

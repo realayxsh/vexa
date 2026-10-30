@@ -95,7 +95,7 @@ class Devansh(discord.ui.Modal, title='Embed Configuration'):
         traceback.print_tb(error.__traceback__)
 
 
-@tree.command(name="embed", description="Create An Embed Using Yawr Support")
+@tree.command(name="embed", description="Create An Embed Using QTs Support")
 async def _embed(interaction: discord.Interaction) -> None:
     await interaction.response.send_modal(Devansh())
 
@@ -165,7 +165,7 @@ async def on_command_completion(context: Context) -> None:
                 name=f"{e.dot_white} Command Executed In Channel :",
                 value=f"{context.channel.name}  | ID: [{context.channel.id}](https://discord.com/channel/{context.channel.id})",
                 inline=False)
-            embed.set_footer(text="Powered By Yawr Support",
+            embed.set_footer(text="Powered By QTs Support",
                              icon_url=client.user.display_avatar.url)
             if log_channel is not None:
                 await log_channel.send(embed=embed)

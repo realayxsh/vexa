@@ -1,5 +1,5 @@
 #!/bin/bash
-# Yawr Support — Dependency installer
+# QTs Support — Dependency installer
 # Run ONCE on a fresh environment before start.sh
 
 set -e

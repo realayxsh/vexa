@@ -30,7 +30,7 @@ class Owner(commands.Cog):
         paginator = Paginator(source=DescriptionEmbedPaginator(
             entries=entries,
             description="",
-            title=f"Server List of Yawr Support - {len(self.client.guilds)}",
+            title=f"Server List of QTs Support - {len(self.client.guilds)}",
             color=0x2f3136,
             per_page=10),
                               ctx=ctx)
@@ -123,7 +123,7 @@ class Owner(commands.Cog):
                 paginator = Paginator(source=DescriptionEmbedPaginator(
                     entries=entries,
                     title=
-                    f"List of Blacklisted users of Yawr Support - {len(blacklist['ids'])}",
+                    f"List of Blacklisted users of QTs Support - {len(blacklist['ids'])}",
                     description="",
                     per_page=10,
                     color=0x2f3136),
@@ -210,7 +210,7 @@ class Owner(commands.Cog):
             ]
             paginator = Paginator(source=DescriptionEmbedPaginator(
                 entries=entries,
-                title=f"No Prefix of Yawr Support - {len(nplist)}",
+                title=f"No Prefix of QTs Support - {len(nplist)}",
                 description="",
                 per_page=10,
                 color=0x2f3136),

@@ -1,6 +1,6 @@
 
 # ============================================================
-#  Yawr Support  —  Permission System
+#  QTs Support  —  Permission System
 #
 #  Role hierarchy (highest → lowest):
 #    Server Owner  →  everything

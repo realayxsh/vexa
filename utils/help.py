@@ -68,7 +68,7 @@ class View(discord.ui.View):
           label=label, emoji=component_emoji(emoji, self.ctx.bot)))
         embed = discord.Embed(title=f"{emoji} {label} Commands", color=0x2f3136)
         embed.set_footer(
-          text="Yawr Support",
+          text="QTs Support",
           icon_url=
           "https://cdn.discordapp.com/icons/1066734883449340015/18fd7390db5acf2f35635d51617e9e77.png?size=2048"
         )

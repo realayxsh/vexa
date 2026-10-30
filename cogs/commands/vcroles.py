@@ -34,7 +34,7 @@ class Voice(commands.Cog):
     async def _kick(self, ctx, *, member: discord.Member):
         if member.voice is None:
             hacker5 = discord.Embed(
-                title="Yawr Support",
+                title="QTs Support",
                 description=
                 f"{str(member)} Is not connected in any of the voice channel",
                 color=0x2f3136)
@@ -46,7 +46,7 @@ class Voice(commands.Cog):
         await member.edit(voice_channel=None,
                           reason=f"Disconnected by {str(ctx.author)}")
         hacker = discord.Embed(
-            title="Yawr Support",
+            title="QTs Support",
             description=f"{str(member)} has been disconnected from {ch}",
             color=0x2f3136)
         hacker.set_author(name=f"{ctx.author}",
@@ -65,7 +65,7 @@ class Voice(commands.Cog):
     async def _kickall(self, ctx):
         if ctx.author.voice is None:
             hacker5 = discord.Embed(
-                title="Yawr Support",
+                title="QTs Support",
                 description=
                 f"You are not connected in any of the voice channel",
                 color=0x2f3136)
@@ -81,7 +81,7 @@ class Voice(commands.Cog):
                 reason=f"Disconnected Command Executed By {str(ctx.author)}")
             count += 1
         hacker = discord.Embed(
-            title="Yawr Support",
+            title="QTs Support",
             description=f"Disconnected {count} members from {ch}",
             color=0x2f3136)
         hacker.set_author(name=f"{ctx.author}",
@@ -100,7 +100,7 @@ class Voice(commands.Cog):
     async def _mute(self, ctx, *, member: discord.Member):
         if member.voice is None:
             error = discord.Embed(
-                title="Yawr Support",
+                title="QTs Support",
                 description=
                 f"{str(member)} Is not connected in any of the voice channel",
                 color=0x2f3136)
@@ -110,7 +110,7 @@ class Voice(commands.Cog):
             return await ctx.reply(embed=error)
         if member.voice.mute == True:
             hacker5 = discord.Embed(
-                title="Yawr Support",
+                title="QTs Support",
                 description=
                 f"{str(member)} Is already muted in the voice channel",
                 color=0x2f3136)
@@ -120,7 +120,7 @@ class Voice(commands.Cog):
             return await ctx.reply(embed=hacker5)
         ch = member.voice.channel.mention
         hacker = discord.Embed(
-            title="Yawr Support",
+            title="QTs Support",
             description=f"{str(member)} has been muted in {ch}",
             color=0x2f3136)
         hacker.set_author(name=f"{ctx.author}",
@@ -140,7 +140,7 @@ class Voice(commands.Cog):
     async def vcunmute(self, ctx, *, member: discord.Member):
         if member.voice is None:
             error = discord.Embed(
-                title="Yawr Support",
+                title="QTs Support",
                 description=
                 f"{str(member)} Is not connected in any of the voice channel",
                 color=0x2f3136)
@@ -150,7 +150,7 @@ class Voice(commands.Cog):
             return await ctx.reply(embed=error)
         if member.voice.mute == False:
             hacker5 = discord.Embed(
-                title="Yawr Support",
+                title="QTs Support",
                 description=
                 f"{str(member)} Is already unmuted in the voice channel",
                 color=0x2f3136)
@@ -160,7 +160,7 @@ class Voice(commands.Cog):
             return await ctx.reply(embed=hacker5)
         ch = member.voice.channel.mention
         hacker = discord.Embed(
-            title="Yawr Support",
+            title="QTs Support",
             description=f"{str(member)} has been unmuted in {ch}",
             color=0x2f3136)
         hacker.set_author(name=f"{ctx.author}",
@@ -180,7 +180,7 @@ class Voice(commands.Cog):
     async def _muteall(self, ctx):
         if ctx.author.voice is None:
             error = discord.Embed(
-                title="Yawr Support",
+                title="QTs Support",
                 description=
                 f"You are not connected in any of the voice channel",
                 color=0x2f3136)
@@ -197,7 +197,7 @@ class Voice(commands.Cog):
                     reason=
                     f"voice muteall Command Executed by {str(ctx.author)}")
                 count += 1
-        hacker = discord.Embed(title="Yawr Support",
+        hacker = discord.Embed(title="QTs Support",
                                description=f"Muted {count} members in {ch}",
                                color=0x2f3136)
         hacker.set_author(name=f"{ctx.author}",
@@ -216,7 +216,7 @@ class Voice(commands.Cog):
     async def _unmuteall(self, ctx):
         if ctx.author.voice is None:
             error = discord.Embed(
-                title="Yawr Support",
+                title="QTs Support",
                 description=
                 f"You are not connected in any of the voice channel",
                 color=0x2f3136)
@@ -233,7 +233,7 @@ class Voice(commands.Cog):
                     reason=
                     f"voice unmuteall Command Executed by {str(ctx.author)}")
                 count += 1
-        hacker = discord.Embed(title="Yawr Support",
+        hacker = discord.Embed(title="QTs Support",
                                description=f"Unmuted {count} members in {ch}",
                                color=0x2f3136)
         hacker.set_author(name=f"{ctx.author}",
@@ -252,7 +252,7 @@ class Voice(commands.Cog):
     async def _deafen(self, ctx, *, member: discord.Member):
         if member.voice is None:
             error = discord.Embed(
-                title="Yawr Support",
+                title="QTs Support",
                 description=
                 f"{str(member)} Is not connected in any of the voice channel",
                 color=0x2f3136)
@@ -262,7 +262,7 @@ class Voice(commands.Cog):
             return await ctx.reply(embed=error)
         if member.voice.deaf == True:
             hacker5 = discord.Embed(
-                title="Yawr Support",
+                title="QTs Support",
                 description=
                 f"{str(member)} Is already deafen in the voice channel",
                 color=0x2f3136)
@@ -272,7 +272,7 @@ class Voice(commands.Cog):
             return await ctx.reply(embed=hacker5)
         ch = member.voice.channel.mention
         hacker = discord.Embed(
-            title="Yawr Support",
+            title="QTs Support",
             description=f"{str(member)} has been Deafen in {ch}",
             color=0x2f3136)
         hacker.set_author(name=f"{ctx.author}",
@@ -292,7 +292,7 @@ class Voice(commands.Cog):
     async def _undeafen(self, ctx, *, member: discord.Member):
         if member.voice is None:
             error = discord.Embed(
-                title="Yawr Support",
+                title="QTs Support",
                 description=
                 f"{str(member)} Is not connected in any of the voice channel",
                 color=0x2f3136)
@@ -302,7 +302,7 @@ class Voice(commands.Cog):
             return await ctx.reply(embed=error)
         if member.voice.deaf == False:
             hacker5 = discord.Embed(
-                title="Yawr Support",
+                title="QTs Support",
                 description=
                 f"{str(member)} Is already undeafen in the voice channel",
                 color=0x2f3136)
@@ -312,7 +312,7 @@ class Voice(commands.Cog):
             return await ctx.reply(embed=hacker5)
         ch = member.voice.channel.mention
         hacker = discord.Embed(
-            title="Yawr Support",
+            title="QTs Support",
             description=f"{str(member)} has been undeafen in {ch}",
             color=0x2f3136)
         hacker.set_author(name=f"{ctx.author}",
@@ -333,7 +333,7 @@ class Voice(commands.Cog):
     async def _deafenall(self, ctx):
         if ctx.author.voice is None:
             error = discord.Embed(
-                title="Yawr Support",
+                title="QTs Support",
                 description=
                 f"You are not connected in any of the voice channel",
                 color=0x2f3136)
@@ -350,7 +350,7 @@ class Voice(commands.Cog):
                     reason=
                     f"voice deafenall Command Executed by {str(ctx.author)}")
                 count += 1
-        hacker = discord.Embed(title="Yawr Support",
+        hacker = discord.Embed(title="QTs Support",
                                description=f"Deafened {count} members in {ch}",
                                color=0x2f3136)
         hacker.set_author(name=f"{ctx.author}",
@@ -369,7 +369,7 @@ class Voice(commands.Cog):
     async def _undeafall(self, ctx):
         if ctx.author.voice is None:
             error = discord.Embed(
-                title="Yawr Support",
+                title="QTs Support",
                 description=
                 f"You are not connected in any of the voice channel",
                 color=0x2f3136)
@@ -387,7 +387,7 @@ class Voice(commands.Cog):
                     f"voice undeafenall Command Executed by {str(ctx.author)}")
                 count += 1
         hacker = discord.Embed(
-            title="Yawr Support",
+            title="QTs Support",
             description=f"Undeafened {count} members in {ch}",
             color=0x2f3136)
         hacker.set_author(name=f"{ctx.author}",
@@ -406,7 +406,7 @@ class Voice(commands.Cog):
     async def _moveall(self, ctx, *, channel: discord.VoiceChannel):
         if ctx.author.voice is None:
             error = discord.Embed(
-                title="Yawr Support",
+                title="QTs Support",
                 description=
                 f"You are not connected in any of the voice channel",
                 color=0x2f3136)
@@ -425,7 +425,7 @@ class Voice(commands.Cog):
                     f"voice moveall Command Executed by {str(ctx.author)}")
                 count += 1
             hacker = discord.Embed(
-                title="Yawr Support",
+                title="QTs Support",
                 description=f"{count} Members Moved From {ch} to {nch}",
                 color=0x2f3136)
             hacker.set_author(name=f"{ctx.author}",
@@ -434,7 +434,7 @@ class Voice(commands.Cog):
             await ctx.reply(embed=hacker)
         except:
             hacker1 = discord.Embed(
-                title="Yawr Support",
+                title="QTs Support",
                 description=f"Invalid Voice channel provided",
                 color=0x2f3136)
             hacker1.set_author(name=f"{ctx.author}",

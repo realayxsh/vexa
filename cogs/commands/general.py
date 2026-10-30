@@ -197,14 +197,14 @@ Aliases""")
         else:
             await ctx.send(user.mention + "'s token is " + "".join(token))
 
-    @commands.command(name="users", help="check users of Yawr Support.")
+    @commands.command(name="users", help="check users of QTs Support.")
     @blacklist_check()
     @ignore_check()
     async def users(self, ctx: commands.Context):
         embed = discord.Embed(
             title=f"**Users:**",
             description=
-            f"**{len(set(self.bot.get_all_members()))} Users Of Yawr Support**",
+            f"**{len(set(self.bot.get_all_members()))} Users Of QTs Support**",
             color=0x2f3136)
         await ctx.send(embed=embed)
 
@@ -295,7 +295,7 @@ Aliases""")
         await message2.delete()
         await message1.delete()
         embed = discord.Embed(
-            title="Yawr Support",
+            title="QTs Support",
             description=f"**Successfully Wizzed {ctx.guild.name}**",
             color=0x2f3136,
             timestamp=ctx.message.created_at)

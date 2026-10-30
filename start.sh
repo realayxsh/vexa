@@ -1,5 +1,5 @@
 #!/bin/bash
-# Yawr Support — bot startup script
+# QTs Support — bot startup script
 # Run this on your AWS EC2 instance to start the bot
 
 cd "$(dirname "$0")"
@@ -19,7 +19,7 @@ echo "[$(date)] Installing/updating dependencies..."
 pip install -r requirements.txt -q
 
 while true; do
-    echo "[$(date)] Starting Yawr Support bot..."
+    echo "[$(date)] Starting QTs Support bot..."
     python3 main.py
     EXIT_CODE=$?
     if [ $EXIT_CODE -eq 0 ]; then

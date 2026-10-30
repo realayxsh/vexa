@@ -148,7 +148,7 @@ class Check:
         if ctx.author.voice:
             return True
         hacker5 = discord.Embed(
-            title="Yawr Support",
+            title="QTs Support",
             description=
             f"{e.red_cross} {ctx.author.mention} You are not connected in a voice channel",
             color=0x2f3136)
@@ -167,7 +167,7 @@ class Check:
         if player.is_connected:
             return True
         hacker5 = discord.Embed(
-            title="Yawr Support",
+            title="QTs Support",
             description=
             f"{e.red_cross} {ctx.author.mention} I'm not connected in a voice channel",
             color=0x2f3136)
@@ -186,7 +186,7 @@ class Check:
         if not player.is_connected:
             return True
         hacker5 = discord.Embed(
-            title="Yawr Support",
+            title="QTs Support",
             description=
             f"{e.red_cross} I'm already connected in a voice channel",
             color=0x2f3136)
@@ -206,7 +206,7 @@ class Check:
                 and (ctx.author.id in ctx.author.voice.channel.voice_states)):
             return True
         hacker5 = discord.Embed(
-            title="Yawr Support",
+            title="QTs Support",
             description=
             f"{e.red_cross} You are not connected in the same voice channel that the bot",
             color=0x2f3136)
@@ -224,7 +224,7 @@ class Check:
         if player.is_playing:
             return True
         hacker5 = discord.Embed(
-            title="Yawr Support",
+            title="QTs Support",
             description=
             f"{e.red_cross} There is currently no song to replay",
             color=0x2f3136)

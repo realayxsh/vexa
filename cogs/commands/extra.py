@@ -148,7 +148,7 @@ class Utility(commands.Cog):
                     if g.member_count != None)
         channel = len(set(self.bot.get_all_channels()))
         embed = discord.Embed(color=0x2f3136,
-                              title="Yawr Support Information",
+                              title="QTs Support Information",
                               description=f"""
 **Bot's Mention:** {self.bot.user.mention}
 **Bot's Username:** {self.bot.user}

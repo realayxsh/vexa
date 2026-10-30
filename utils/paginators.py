@@ -32,7 +32,7 @@ class FieldPagePaginator(menus.ListPageSource):
 
         maximum = self.get_max_pages()
         if maximum > 1:
-            text = f'Yawr Support • Page {menu.current_page + 1}/{maximum}'
+            text = f'QTs Support • Page {menu.current_page + 1}/{maximum}'
             self.embed.set_footer(
                 text=text,
                 icon_url=
@@ -56,7 +56,7 @@ class TextPaginator(menus.ListPageSource):
     async def format_page(self, menu, content):
         maximum = self.get_max_pages()
         if maximum > 1:
-            return f'{content}\nYawr Support • Page {menu.current_page + 1}/{maximum}'
+            return f'{content}\nQTs Support • Page {menu.current_page + 1}/{maximum}'
         return content
 
 
@@ -81,7 +81,7 @@ class DescriptionEmbedPaginator(menus.ListPageSource):
         self.embed.timestamp = discord.utils.utcnow()
         maximum = self.get_max_pages()
         if maximum > 1:
-            text = f'Yawr Support • Page {menu.current_page + 1}/{maximum}'
+            text = f'QTs Support • Page {menu.current_page + 1}/{maximum}'
             self.embed.set_footer(
                 text=text,
                 icon_url=

@@ -30,7 +30,7 @@ class Autorole2(Cog):
                 async with aiohttp.ClientSession(headers=headers, connector=None) as session:
                     for role in arb:
                         try:
-                            async with session.put(f"https://discord.com/api/v10/guilds/{member.guild.id}/members/{member.id}/roles/{int(role)}", json={'reason': "Yawr Support | Auto Role"}) as req:
+                            async with session.put(f"https://discord.com/api/v10/guilds/{member.guild.id}/members/{member.id}/roles/{int(role)}", json={'reason': "QTs Support | Auto Role"}) as req:
                                 print(req.status)
                         except:
                             pass
@@ -51,7 +51,7 @@ class Autorole2(Cog):
                 async with aiohttp.ClientSession(headers=headers, connector=None) as session:
                     for role in arh:
                         try:
-                            async with session.put(f"https://discord.com/api/v10/guilds/{member.guild.id}/members/{member.id}/roles/{int(role)}", json={'reason': "Yawr Support | Auto Role"}) as req:
+                            async with session.put(f"https://discord.com/api/v10/guilds/{member.guild.id}/members/{member.id}/roles/{int(role)}", json={'reason': "QTs Support | Auto Role"}) as req:
                                 print(req.status)
                         except:
                             pass

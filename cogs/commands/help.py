@@ -73,7 +73,7 @@ class HelpCommand(commands.HelpCommand):
             color=0x2f3136)
         embed.set_thumbnail(url=self.context.bot.user.display_avatar.url)
 
-        embed.set_footer(text="Yawr Support",
+        embed.set_footer(text="QTs Support",
                          icon_url=self.context.bot.user.display_avatar.url)
 
         modules = []

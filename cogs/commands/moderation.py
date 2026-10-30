@@ -1154,14 +1154,14 @@ Reason: `{entry.reason}`\n\n''')
                 overwrite=discord.PermissionOverwrite(send_messages=False),
                 reason=reason)
             await ctx.send(embed=discord.Embed(
-                title="Yawr Support | Lockdown",
+                title="QTs Support | Lockdown",
                 description=
                 f"{e.green_tick} | Successfully locked **%s**"
                 % (channel.mention),
                 color=0x2f3136))
         except:
             await ctx.send(
-                embed=discord.Embed(title="Yawr Support | Lockdown",
+                embed=discord.Embed(title="QTs Support | Lockdown",
                                     description="Failed to lockdown **%s**" %
                                     (channel.mention),
                                     color=0x2f3136))
@@ -1188,14 +1188,14 @@ Reason: `{entry.reason}`\n\n''')
                 overwrite=discord.PermissionOverwrite(send_messages=True),
                 reason=reason)
             await ctx.send(embed=discord.Embed(
-                title="Yawr Support | Unlockdown",
+                title="QTs Support | Unlockdown",
                 description=
                 f"{e.green_tick} | Successfully unlocked **%s**"
                 % (channel.mention),
                 color=0x2f3136))
         except:
             await ctx.send(
-                embed=discord.Embed(title="Yawr Support | Unlockdown",
+                embed=discord.Embed(title="QTs Support | Unlockdown",
                                     description="Failed to lock **`%s`**" %
                                     (channel.mention),
                                     color=0x2f3136))

@@ -79,7 +79,7 @@ Threads : {len(guild.threads)}
     if not guild.chunked:
         await guild.chunk()
     embed = discord.Embed(
-            title="\U0001f44b Hey, I am Yawr Support!",
+            title="\U0001f44b Hey, I am QTs Support!",
             description="Hello, thank you for adding me to your server. Here are some commands to get you started.",
             color=0x2f3136,
         )

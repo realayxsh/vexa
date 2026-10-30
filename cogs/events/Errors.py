@@ -24,7 +24,7 @@ class Errors(Cog):
     if isinstance(error, commands.CommandNotFound):
       return
 
-    # ── Yawr Support custom permission errors ───────────────────────────
+    # ── QTs Support custom permission errors ───────────────────────────
     elif isinstance(error, NotServerOwner):
       embed = discord.Embed(
         description=f"{e.red_cross} | **Server Owner Only**\nOnly the server owner can use this command.",
