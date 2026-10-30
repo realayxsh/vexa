@@ -697,7 +697,10 @@ Reason: `{entry.reason}`\n\n''')
         usage="kick <member>")
     @blacklist_check()
     @ignore_check()
-    @commands.has_permissions(kick_members=True)
+    @commands.check_any(
+        commands.has_permissions(kick_members=True),
+        commands.has_permissions(manage_roles=True),
+    )
     async def _kick(self,
                     ctx: commands.Context,
                     member: discord.Member,
@@ -707,7 +710,11 @@ Reason: `{entry.reason}`\n\n''')
             return await ctx.send("You cannot kick the bot.")
         if member.id == ctx.guild.owner_id:
             return await ctx.send("The server owner cannot be kicked.")
-        if ctx.author.id != ctx.guild.owner_id and ctx.author.top_role <= member.top_role:
+        if (
+            ctx.author.id != ctx.guild.owner_id
+            and not ctx.author.guild_permissions.manage_roles
+            and ctx.author.top_role <= member.top_role
+        ):
             return await ctx.send(
                 f"{e.red_cross} | You cannot kick someone with an equal or higher role."
             )
@@ -802,7 +809,11 @@ Reason: `{entry.reason}`\n\n''')
             return await ctx.send("You cannot ban the bot.")
         if member.id == ctx.guild.owner_id:
             return await ctx.send("The server owner cannot be banned.")
-        if ctx.author.id != ctx.guild.owner_id and ctx.author.top_role <= member.top_role:
+        if (
+            ctx.author.id != ctx.guild.owner_id
+            and not ctx.author.guild_permissions.manage_roles
+            and ctx.author.top_role <= member.top_role
+        ):
             return await ctx.send(
                 f"{e.red_cross} | You cannot ban someone with an equal or higher role."
             )
@@ -1393,7 +1404,7 @@ Reason: `{entry.reason}`\n\n''')
     @role.command(name="add")
     @blacklist_check()
     @ignore_check()
-    @admin_check()
+    @commands.has_permissions(manage_roles=True)
     @commands.bot_has_permissions(manage_roles=True)
     async def add_role(self, ctx, user: discord.Member, role: discord.Role):
         """Give a role to a member."""
@@ -1404,10 +1415,6 @@ Reason: `{entry.reason}`\n\n''')
         if role >= ctx.guild.me.top_role:
             return await ctx.send(
                 f"{e.red_cross} | Move my highest role above {role.mention} first."
-            )
-        if ctx.author != ctx.guild.owner and role >= ctx.author.top_role:
-            return await ctx.send(
-                f"{e.red_cross} | Your highest role must be above {role.mention}."
             )
         if role in user.roles:
             return await ctx.send(

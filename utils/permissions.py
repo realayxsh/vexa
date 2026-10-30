@@ -103,18 +103,20 @@ def coowner_check():
     return commands.check(predicate)
 
 def ban_moderator_check():
-    """Allow bot owners, server owners, Co Owners, or Discord Administrators."""
+    """Allow moderators, Manage Roles users, or elevated configured roles."""
     async def predicate(ctx):
         if not ctx.guild:
             raise commands.NoPrivateMessage()
         if (
             _is_coowner_or_above(ctx)
             or ctx.author.guild_permissions.administrator
+            or ctx.author.guild_permissions.ban_members
+            or ctx.author.guild_permissions.manage_roles
         ):
             return True
         raise NotBanModerator(
-            "You need Discord Administrator permission or the configured Co Owner role "
-            "to use this command.")
+            "You need Ban Members, Manage Roles, Discord Administrator permission, "
+            "or the configured Co Owner role to use this command.")
     return commands.check(predicate)
 
 
@@ -162,6 +164,15 @@ async def global_permission_check(ctx) -> bool:
     if (
         getattr(ctx.cog, "qualified_name", None) in {"Moderation", "Server"}
         and ctx.author.guild_permissions.administrator
+    ):
+        return True
+
+    # Manage Roles users may use the role, kick, and ban moderation commands.
+    if (
+        getattr(ctx.cog, "qualified_name", None) == "Moderation"
+        and ctx.command is not None
+        and ctx.command.qualified_name in {"role add", "kick", "ban"}
+        and ctx.author.guild_permissions.manage_roles
     ):
         return True
 
