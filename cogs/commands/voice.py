@@ -15,11 +15,9 @@ class shree00(commands.Cog):
 		      description = ""
 		      return emoji, label, description
 
-    @commands.hybrid_group()
+    @commands.group(name="voicelegacy")
     async def __Voice__(self, ctx: commands.Context):
         """`voice` , `voice kick` , `voice kickall` , `voice mute` , `voice muteall` , `voice unmute` , `voice unmuteall` , `voice deafen` , `voice deafenall` , `voice undeafen` , `voice undeafenall` , `voice moveall`"""
-
-
 
 
 

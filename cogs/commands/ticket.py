@@ -58,7 +58,7 @@ class Ticket(commands.Cog):
 
 
   
-    @commands.hybrid_group(name="Ticket", description="Ticket Setup")
+    @commands.hybrid_group(name="ticket", description="Ticket Setup")
     async def ticket(self, ctx: commands.Context):
         ...
     @commands.hybrid_command()
@@ -70,5 +70,4 @@ class Ticket(commands.Cog):
         guild = ctx.guild       
         await guild.create_category_channel(name="Ticket-category")
         await ctx.send(embed=embed, view=createTicket())
-
 

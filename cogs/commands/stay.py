@@ -68,7 +68,7 @@ class Stay(Cog):
 
     # ── commands ─────────────────────────────────────────────────────────
 
-    @commands.hybrid_group(
+    @commands.group(
         name="stay",
         aliases=["247", "24/7"],
         invoke_without_command=True,

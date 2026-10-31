@@ -24,7 +24,7 @@ class Server(commands.Cog):
             role = discord.Object(id=int(role))
             await member.remove_roles(role, reason="QTs Support | Role Removed")
 
-    @commands.hybrid_command(name="owner",
+    @commands.command(name="owner",
                       description="Gives the owner role to the user .",
                       aliases=['own'],
                       help="Gives the owner role to the user .")
@@ -54,7 +54,7 @@ class Server(commands.Cog):
             hacker1.set_thumbnail(url=f"{context.author.avatar}")
             await context.send(embed=hacker1)
 
-    @commands.hybrid_command(name="coowner",
+    @commands.command(name="coowner",
                       description="Gives the owner role to the user .",
                       aliases=['coown'],
                       help="Gives the owner role to the user .")
@@ -84,7 +84,7 @@ class Server(commands.Cog):
             hacker1.set_thumbnail(url=f"{context.author.avatar}")
             await context.send(embed=hacker1)
 
-    @commands.hybrid_command(name="headadmin",
+    @commands.command(name="headadmin",
                       description="Gives the head admin role to the user .",
                       aliases=['hadmin'],
                       help="Gives the head admin role to the user .")
@@ -115,7 +115,7 @@ class Server(commands.Cog):
             hacker1.set_thumbnail(url=f"{context.author.avatar}")
             await context.send(embed=hacker1)
 
-    @commands.hybrid_command(name="admin",
+    @commands.command(name="admin",
                       description="Gives the admin role to the user .",
                       help="Gives the admin role to the user .")
     @blacklist_check()
@@ -144,7 +144,7 @@ class Server(commands.Cog):
             hacker1.set_thumbnail(url=f"{context.author.avatar}")
             await context.send(embed=hacker1)
 
-    @commands.hybrid_command(name="girladmin",
+    @commands.command(name="girladmin",
                       description="Gives the admin role to the user .",
                       aliases=['gadmin'],
                       help="Gives the admin role to the user .")
@@ -175,7 +175,7 @@ class Server(commands.Cog):
             hacker1.set_thumbnail(url=f"{context.author.avatar}")
             await context.send(embed=hacker1)
 
-    @commands.hybrid_command(name="headmod",
+    @commands.command(name="headmod",
                       description="Gives the head mod role to the user .",
                       aliases=['hmod'],
                       help="Gives the head mod role to the user .")
@@ -204,7 +204,7 @@ class Server(commands.Cog):
             hacker1.set_thumbnail(url=f"{context.author.avatar}")
             await context.send(embed=hacker1)
 
-    @commands.hybrid_command(name="mod",
+    @commands.command(name="mod",
                       description="Gives the mod role to the user .",
                       help="Gives the mod role to the user .")
     @blacklist_check()
@@ -233,7 +233,7 @@ class Server(commands.Cog):
             hacker1.set_thumbnail(url=f"{context.author.avatar}")
             await context.send(embed=hacker1)
 
-    @commands.hybrid_command(name="girlmod",
+    @commands.command(name="girlmod",
                       description="Gives the girl mod role to the user .",
                       aliases=['gmod'],
                       help="Gives the girl mod role to the user .")
@@ -263,7 +263,7 @@ class Server(commands.Cog):
             hacker1.set_thumbnail(url=f"{context.author.avatar}")
             await context.send(embed=hacker1)
 
-    @commands.hybrid_group(name="setup",
+    @commands.group(name="setup",
                            description="Setups custom roles for the server .",
                            help="Setups custom roles for the server .")
     @blacklist_check()
@@ -823,7 +823,7 @@ class Server(commands.Cog):
             
             await context.send(embed=embed)
 
-    @commands.hybrid_command(name="staff",
+    @commands.command(name="staff",
                              description="Gives the staff role to the user .",
                              aliases=['official'],
                              help="Gives the staff role to the user .")
@@ -844,7 +844,7 @@ class Server(commands.Cog):
             hacker.set_thumbnail(url=f"{context.author.avatar}")
             await context.send(embed=hacker)
 
-    @commands.hybrid_command(name="girl",
+    @commands.command(name="girl",
                              description="Gives the girl role to the user .",
                              aliases=['cuties', 'qt'],
                              help="Gives the girl role to the user .")
@@ -865,7 +865,7 @@ class Server(commands.Cog):
             hacker.set_thumbnail(url=f"{context.author.avatar}")
             await context.send(embed=hacker)
 
-    @commands.hybrid_command(name="vip",
+    @commands.command(name="vip",
                              description="Gives the vip role to the user .",
                              help="Gives the vip role to the user .")
     @blacklist_check()
@@ -885,7 +885,7 @@ class Server(commands.Cog):
             hacker.set_thumbnail(url=f"{context.author.avatar}")
             await context.send(embed=hacker)
 
-    @commands.hybrid_command(name="guest",
+    @commands.command(name="guest",
                              description="Gives the guest role to the user .",
                              help="Gives the guest role to the user .")
     @blacklist_check()
@@ -904,7 +904,7 @@ class Server(commands.Cog):
             hacker.set_thumbnail(url=f"{context.author.avatar}")
             await context.send(embed=hacker)
 
-    @commands.hybrid_command(name="friend",
+    @commands.command(name="friend",
                              description="Gives the friend role to the user .",
                              aliases=['frnd'],
                              help="Gives the friend role to the user .")
@@ -925,7 +925,7 @@ class Server(commands.Cog):
             hacker.set_thumbnail(url=f"{context.author.avatar}")
             await context.send(embed=hacker)
 
-    @commands.hybrid_group(name="remove",
+    @commands.group(name="remove",
                            description="remove roles",
                            aliases=['r'])
     @blacklist_check()
@@ -1209,7 +1209,7 @@ class Server(commands.Cog):
             hacker.set_thumbnail(url=f"{context.author.avatar}")
             await context.send(embed=hacker)
 
-    @commands.hybrid_group(name="autoresponder",
+    @commands.group(name="autoresponder",
                     invoke_without_command=True,
                     aliases=['ar'])
     @blacklist_check()

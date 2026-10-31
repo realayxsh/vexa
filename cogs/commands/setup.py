@@ -28,7 +28,7 @@ class Setup(Cog):
 
     # ── set commands ─────────────────────────────────────────────────────
 
-    @commands.hybrid_command(
+    @commands.command(
         name="setcoowner",
         aliases=["setco", "setcoown"],
         help="Set the Co Owner role. Co Owners can ban, kick, mute and use all mod commands.",
@@ -47,7 +47,7 @@ class Setup(Cog):
         embed.set_author(name=str(ctx.author), icon_url=ctx.author.display_avatar.url)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.hybrid_command(
+    @commands.command(
         name="setadmin",
         aliases=["setadm"],
         help="Set the Admin role. Admins can give and remove server roles from members.",
@@ -66,7 +66,7 @@ class Setup(Cog):
         embed.set_author(name=str(ctx.author), icon_url=ctx.author.display_avatar.url)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.hybrid_command(
+    @commands.command(
         name="setmod",
         aliases=["setmoderator"],
         help="Set the Mod role for reference in the server.",
@@ -86,7 +86,7 @@ class Setup(Cog):
 
     # ── reset commands ───────────────────────────────────────────────────
 
-    @commands.hybrid_command(
+    @commands.command(
         name="removecoowner",
         aliases=["delcoowner", "resetcoown"],
         help="Remove the configured Co Owner role.",
@@ -104,7 +104,7 @@ class Setup(Cog):
         embed.set_author(name=str(ctx.author), icon_url=ctx.author.display_avatar.url)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.hybrid_command(
+    @commands.command(
         name="removeadmin",
         aliases=["deladmin", "resetadmin"],
         help="Remove the configured Admin role.",
@@ -124,7 +124,7 @@ class Setup(Cog):
 
     # ── Log channel setup commands ────────────────────────────────────────
 
-    @commands.hybrid_command(
+    @commands.command(
         name="setbotlog",
         aliases=["setbotlogchannel"],
         description="Set the channel for bot command logs.",
@@ -145,7 +145,7 @@ class Setup(Cog):
         embed.set_author(name=str(ctx.author), icon_url=ctx.author.display_avatar.url)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.hybrid_command(
+    @commands.command(
         name="logchannels",
         aliases=["logconfig", "logsettings"],
         description="Show all configured log channels for this server.",
@@ -171,7 +171,7 @@ class Setup(Cog):
 
     # ── status command ───────────────────────────────────────────────────
 
-    @commands.hybrid_command(
+    @commands.command(
         name="permissions",
         aliases=["perms", "rolesconfig", "botperms"],
         help="Shows the current permission role configuration for this server.",

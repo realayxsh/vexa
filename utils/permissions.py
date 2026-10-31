@@ -76,6 +76,13 @@ def _is_admin_or_above(ctx) -> bool:
     return _member_has_role(ctx.author, admin_id)
 
 
+def _is_moderator_or_above(ctx) -> bool:
+    if _is_admin_or_above(ctx):
+        return True
+    mod_id = _get_role_id(ctx.guild.id, "mod")
+    return _member_has_role(ctx.author, mod_id)
+
+
 # ── Public check decorators ──────────────────────────────────
 
 def server_owner_check():
@@ -108,7 +115,7 @@ def ban_moderator_check():
         if not ctx.guild:
             raise commands.NoPrivateMessage()
         if (
-            _is_coowner_or_above(ctx)
+            _is_moderator_or_above(ctx)
             or ctx.author.guild_permissions.administrator
             or ctx.author.guild_permissions.ban_members
             or ctx.author.guild_permissions.manage_roles
@@ -117,6 +124,25 @@ def ban_moderator_check():
         raise NotBanModerator(
             "You need Ban Members, Manage Roles, Discord Administrator permission, "
             "or the configured Co Owner role to use this command.")
+    return commands.check(predicate)
+
+
+def moderator_check():
+    """Allow configured moderators and Discord moderation permissions."""
+    async def predicate(ctx):
+        if not ctx.guild:
+            raise commands.NoPrivateMessage()
+        if (
+            _is_moderator_or_above(ctx)
+            or ctx.author.guild_permissions.manage_messages
+            or ctx.author.guild_permissions.moderate_members
+            or ctx.author.guild_permissions.kick_members
+            or ctx.author.guild_permissions.manage_roles
+        ):
+            return True
+        raise commands.CheckFailure(
+            "You need the configured Mod role or a moderation permission "
+            "to use this command.")
     return commands.check(predicate)
 
 
@@ -175,7 +201,8 @@ async def global_permission_check(ctx) -> bool:
             "role", "role add", "kick", "ban", "mute", "unmute"
         }
         and (
-            ctx.author.guild_permissions.manage_roles
+            _is_moderator_or_above(ctx)
+            or ctx.author.guild_permissions.manage_roles
             or ctx.author.guild_permissions.manage_messages
             or ctx.author.guild_permissions.moderate_members
             or ctx.author.guild_permissions.kick_members

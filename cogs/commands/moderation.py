@@ -16,7 +16,12 @@ from datetime import datetime
 from discord.ext.commands.cooldowns import BucketType
 from discord.ext import commands
 from utils.Tools import *
-from utils.permissions import coowner_check, admin_check, ban_moderator_check
+from utils.permissions import (
+    coowner_check,
+    admin_check,
+    ban_moderator_check,
+    moderator_check,
+)
 from utils.emojis import e
 from core import Cog, Dilbar, Context
 
@@ -594,6 +599,7 @@ Reason: `{entry.reason}`\n\n''')
     @ignore_check()
     @commands.bot_has_permissions(moderate_members=True)
     @commands.check_any(
+        moderator_check(),
         commands.has_permissions(manage_messages=True),
         commands.has_permissions(moderate_members=True),
         commands.has_permissions(kick_members=True),
@@ -672,7 +678,7 @@ Reason: `{entry.reason}`\n\n''')
     @commands.guild_only()
     @commands.bot_has_permissions(moderate_members=True)
     @commands.check_any(
-        coowner_check(),
+        moderator_check(),
         commands.has_permissions(manage_messages=True),
         commands.has_permissions(moderate_members=True),
         commands.has_permissions(kick_members=True),

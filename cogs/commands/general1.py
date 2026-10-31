@@ -15,6 +15,6 @@ class devansh102(commands.Cog):
 		      description = ""
 		      return emoji, label, description
 
-    @commands.hybrid_group()
+    @commands.group(name="generallegacy")
     async def __General__(self, ctx: commands.Context):
         """`afk` , `avatar` , `banner` , `servericon` , `membercount` , `poll` , `hack` , `token` , `users` , `italicize` , `strike` , `quote` , `code` , `bold` , `censor` , `underline` , `gender` , `wizz` , `pikachu` , `shorten` , `urban` , `rickroll` , `hash` , `snipe` , `roleall`"""
