@@ -598,13 +598,7 @@ Reason: `{entry.reason}`\n\n''')
     @blacklist_check()
     @ignore_check()
     @commands.bot_has_permissions(moderate_members=True)
-    @commands.check_any(
-        moderator_check(),
-        commands.has_permissions(manage_messages=True),
-        commands.has_permissions(moderate_members=True),
-        commands.has_permissions(kick_members=True),
-        commands.has_permissions(manage_roles=True),
-    )
+    @commands.has_guild_permissions(moderate_members=True)
     async def _mute(self, ctx, member: discord.Member, duration):
         ok = duration[:-1]
         tame = self.convert(duration)
@@ -652,21 +646,31 @@ Reason: `{entry.reason}`\n\n''')
                     description=
                     f"{e.green_tick} | Successfully Muted {member.mention} For {ok} Hour(s)",
                     timestamp=ctx.message.created_at)
+        if member.guild_permissions.administrator:
+            hacker1 = discord.Embed(
+                color=0x2f3136,
+                description=f"{e.red_cross} | I can't mute administrators",
+                timestamp=ctx.message.created_at)
+            return await ctx.reply(embed=hacker1)
+
         try:
-            if member.guild_permissions.administrator:
-                hacker1 = discord.Embed(
-                    color=0x2f3136,
-                    description=
-                    f"{e.red_cross} | I can\'t mute administrators",
-                    timestamp=ctx.message.created_at)
-                await ctx.reply(embed=hacker1)
-            else:
-                await member.timeout(discord.utils.utcnow() + t,
-                                     reason="Command Used By: {0}".format(
-                                         ctx.author))
-                await ctx.send(embed=hacker)
-        except:
-            print("an error occured")
+            await member.timeout(
+                discord.utils.utcnow() + t,
+                reason=f"Command Used By: {ctx.author}",
+            )
+        except discord.Forbidden:
+            return await ctx.send(
+                f"{e.red_cross} | Discord denied the timeout. "
+                "Check that I have **Moderate Members** and my highest role "
+                "is above the target's highest role."
+            )
+        except discord.HTTPException as error:
+            return await ctx.send(
+                f"{e.red_cross} | Discord could not complete the timeout "
+                f"(error code: `{error.code}`)."
+            )
+
+        await ctx.send(embed=hacker)
 
     @commands.hybrid_command(name="unmute",
                              description="Unmutes a member .",
@@ -677,24 +681,32 @@ Reason: `{entry.reason}`\n\n''')
     @commands.max_concurrency(1, per=commands.BucketType.default, wait=False)
     @commands.guild_only()
     @commands.bot_has_permissions(moderate_members=True)
-    @commands.check_any(
-        moderator_check(),
-        commands.has_permissions(manage_messages=True),
-        commands.has_permissions(moderate_members=True),
-        commands.has_permissions(kick_members=True),
-        commands.has_permissions(manage_roles=True),
-    )
+    @commands.has_guild_permissions(moderate_members=True)
     async def untimeout(self, ctx, member: discord.Member):
         if member.is_timed_out():
             try:
-                await member.edit(timed_out_until=None)
+                await member.edit(
+                    timed_out_until=None,
+                    reason=f"Command Used By: {ctx.author}",
+                )
                 hacker5 = discord.Embed(
                     color=0x2f3136,
                     description=
                     f"{e.green_tick} | Successfully Unmuted {member.name}",
                     timestamp=ctx.message.created_at)
                 await ctx.reply(embed=hacker5)
-            except Exception as err:
+            except discord.Forbidden:
+                hacker = discord.Embed(
+                    color=0x2f3136,
+                    description=(
+                        f"{e.red_cross} | Discord denied removing the timeout. "
+                        "Check that I have **Moderate Members** and my highest "
+                        "role is above the target's highest role."
+                    ),
+                    timestamp=ctx.message.created_at,
+                )
+                await ctx.send(embed=hacker)
+            except discord.HTTPException as err:
                 hacker = discord.Embed(
                     color=0x2f3136,
                     description=

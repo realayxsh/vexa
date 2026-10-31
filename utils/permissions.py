@@ -79,8 +79,10 @@ def _is_admin_or_above(ctx) -> bool:
 def _is_moderator_or_above(ctx) -> bool:
     if _is_admin_or_above(ctx):
         return True
-    mod_id = _get_role_id(ctx.guild.id, "mod")
-    return _member_has_role(ctx.author, mod_id)
+    return any(
+        _member_has_role(ctx.author, _get_role_id(ctx.guild.id, role_key))
+        for role_key in ("mod", "staff")
+    )
 
 
 # ── Public check decorators ──────────────────────────────────
@@ -193,20 +195,27 @@ async def global_permission_check(ctx) -> bool:
     ):
         return True
 
-    # Manage Roles users may use the role, kick, and ban moderation commands.
+    # Moderation permissions may use role, kick, and ban commands.
     if (
         getattr(ctx.cog, "qualified_name", None) == "Moderation"
         and ctx.command is not None
         and ctx.command.qualified_name in {
-            "role", "role add", "kick", "ban", "mute", "unmute"
+            "role", "role add", "kick", "ban"
         }
         and (
-            _is_moderator_or_above(ctx)
-            or ctx.author.guild_permissions.manage_roles
-            or ctx.author.guild_permissions.manage_messages
-            or ctx.author.guild_permissions.moderate_members
+            ctx.author.guild_permissions.manage_roles
             or ctx.author.guild_permissions.kick_members
+            or ctx.author.guild_permissions.ban_members
         )
+    ):
+        return True
+
+    # Only the Discord Moderate Members permission is required for timeouts.
+    if (
+        getattr(ctx.cog, "qualified_name", None) == "Moderation"
+        and ctx.command is not None
+        and ctx.command.qualified_name in {"mute", "unmute"}
+        and ctx.author.guild_permissions.moderate_members
     ):
         return True
 
