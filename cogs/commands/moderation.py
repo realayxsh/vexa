@@ -592,7 +592,13 @@ Reason: `{entry.reason}`\n\n''')
     @commands.guild_only()
     @blacklist_check()
     @ignore_check()
-    @commands.has_permissions(manage_messages=True)
+    @commands.bot_has_permissions(moderate_members=True)
+    @commands.check_any(
+        commands.has_permissions(manage_messages=True),
+        commands.has_permissions(moderate_members=True),
+        commands.has_permissions(kick_members=True),
+        commands.has_permissions(manage_roles=True),
+    )
     async def _mute(self, ctx, member: discord.Member, duration):
         ok = duration[:-1]
         tame = self.convert(duration)
@@ -664,7 +670,14 @@ Reason: `{entry.reason}`\n\n''')
     @commands.cooldown(1, 20, commands.BucketType.member)
     @commands.max_concurrency(1, per=commands.BucketType.default, wait=False)
     @commands.guild_only()
-    @coowner_check()
+    @commands.bot_has_permissions(moderate_members=True)
+    @commands.check_any(
+        coowner_check(),
+        commands.has_permissions(manage_messages=True),
+        commands.has_permissions(moderate_members=True),
+        commands.has_permissions(kick_members=True),
+        commands.has_permissions(manage_roles=True),
+    )
     async def untimeout(self, ctx, member: discord.Member):
         if member.is_timed_out():
             try:
