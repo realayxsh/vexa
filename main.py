@@ -95,11 +95,6 @@ class Devansh(discord.ui.Modal, title='Embed Configuration'):
         traceback.print_tb(error.__traceback__)
 
 
-@tree.command(name="embed", description="Create An Embed Using QTs Support")
-async def _embed(interaction: discord.Interaction) -> None:
-    await interaction.response.send_modal(Devansh())
-
-
 ########################################
 
 
