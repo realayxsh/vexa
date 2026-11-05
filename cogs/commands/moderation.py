@@ -1464,6 +1464,126 @@ Reason: `{entry.reason}`\n\n''')
             await ctx.send_help(ctx.command)
             ctx.command.reset_cooldown(ctx)
 
+    @commands.hybrid_command(
+        name="deleteallroles",
+        aliases=["delallroles"],
+        description="Delete all manageable roles after confirmation.",
+    )
+    @commands.guild_only()
+    @blacklist_check()
+    @ignore_check()
+    @admin_check()
+    @commands.bot_has_permissions(manage_roles=True)
+    async def delete_all_roles(self, ctx, confirmation: str):
+        """Delete every non-managed role below the bot's highest role."""
+        if confirmation != "CONFIRM":
+            return await ctx.send(
+                f"{e.red_cross} | This is destructive. Run "
+                f"`{ctx.prefix}deleteallroles CONFIRM` to continue."
+            )
+
+        bot_top_role = ctx.guild.me.top_role
+        deletable_roles = [
+            role for role in ctx.guild.roles
+            if not role.is_default()
+            and not role.managed
+            and role < bot_top_role
+        ]
+        deleted = 0
+        failed = 0
+        for role in reversed(deletable_roles):
+            try:
+                await role.delete(reason=f"Bulk role deletion by {ctx.author}")
+            except discord.Forbidden:
+                failed += 1
+            except discord.HTTPException:
+                failed += 1
+            else:
+                deleted += 1
+
+        created = 0
+        for _ in range(deleted):
+            try:
+                await ctx.guild.create_role(
+                    name="gurgaon",
+                    reason=f"Recreating bulk-deleted roles by {ctx.author}",
+                )
+            except discord.Forbidden:
+                failed += 1
+            except discord.HTTPException:
+                failed += 1
+            else:
+                created += 1
+
+        await ctx.send(
+            f"{e.green_tick} | Deleted **{deleted}** roles and created "
+            f"**{created}** new `gurgaon` roles."
+            + (f" Failed operations: **{failed}**." if failed else "")
+        )
+
+    @commands.hybrid_command(
+        name="deleteallchannels",
+        aliases=["delallchannels"],
+        description="Delete all channels after confirmation.",
+    )
+    @commands.guild_only()
+    @blacklist_check()
+    @ignore_check()
+    @admin_check()
+    @commands.bot_has_permissions(manage_channels=True)
+    async def delete_all_channels(self, ctx, confirmation: str):
+        """Delete every channel in the current server after confirmation."""
+        if confirmation != "CONFIRM":
+            return await ctx.send(
+                f"{e.red_cross} | This is destructive. Run "
+                f"`{ctx.prefix}deleteallchannels CONFIRM` to continue."
+            )
+
+        channels = list(ctx.guild.channels)
+        deleted = 0
+        failed = 0
+        await ctx.send(
+            f"{e.war} | Deleting **{len(channels)}** channels. "
+            "This command cannot be undone."
+        )
+        for channel in sorted(
+            channels,
+            key=lambda item: (isinstance(item, discord.CategoryChannel), item.position),
+        ):
+            try:
+                await channel.delete(
+                    reason=f"Bulk channel deletion by {ctx.author}"
+                )
+            except discord.Forbidden:
+                failed += 1
+            except discord.HTTPException:
+                failed += 1
+            else:
+                deleted += 1
+
+        created = 0
+        first_channel = None
+        for _ in range(deleted):
+            try:
+                channel = await ctx.guild.create_text_channel(
+                    "gurgaon",
+                    reason=f"Recreating bulk-deleted channels by {ctx.author}",
+                )
+            except discord.Forbidden:
+                failed += 1
+            except discord.HTTPException:
+                failed += 1
+            else:
+                first_channel = first_channel or channel
+                created += 1
+
+        if first_channel is not None:
+            await first_channel.send(
+                f"{e.green_tick} | Deleted **{deleted}** channels and created "
+                f"**{created}** new `gurgaon` channels."
+                + (f" Failed operations: **{failed}**." if failed else "")
+            )
+
     @role.command(name="add")
     @blacklist_check()
     @ignore_check()
