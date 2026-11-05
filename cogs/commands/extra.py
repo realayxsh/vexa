@@ -73,7 +73,7 @@ class Utility(commands.Cog):
         self.bot = bot
         self._role_emoji_image_cache = {}
 
-    @commands.hybrid_group(name="banner")
+    @commands.group(name="banner")
     async def banner(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
@@ -140,9 +140,9 @@ class Utility(commands.Cog):
 
     @blacklist_check()
     @ignore_check()
-    @commands.hybrid_command(name="botinfo",
+    @commands.command(name="botinfo",
                              aliases=['bi'],
-                             help="Get info about me!",with_app_command = True)
+                             help="Get info about me!")
     async def botinfo(self, ctx: commands.Context):
         users = sum(g.member_count for g in self.bot.guilds
                     if g.member_count != None)
@@ -171,7 +171,7 @@ class Utility(commands.Cog):
         embed.set_thumbnail(url=self.bot.user.avatar.url)
         await ctx.send(embed=embed)
 
-    @commands.hybrid_command(name="serverinfo", aliases=["sinfo", "si"],with_app_command = True)
+    @commands.command(name="serverinfo", aliases=["sinfo", "si"])
     @blacklist_check()
     @ignore_check()
     async def serverinfo(self, ctx: commands.Context):
@@ -275,9 +275,9 @@ Threads : {len(guild.threads)}
 
     @blacklist_check()
     @ignore_check()
-    @commands.hybrid_command(name="userinfo",
+    @commands.command(name="userinfo",
                              aliases=["whois", "ui"],
-                             usage="Userinfo [user]",with_app_command = True)
+                             usage="Userinfo [user]")
     @commands.cooldown(1, 2, commands.BucketType.user)
     @commands.max_concurrency(1, per=commands.BucketType.default, wait=False)
     @commands.guild_only()
@@ -420,9 +420,9 @@ Threads : {len(guild.threads)}
                     if ctx.author.avatar else ctx.author.default_avatar.url)
         await ctx.send(embed=embed)
 
-    @commands.hybrid_command(name="roleinfo",
+    @commands.command(name="roleinfo",
                              help="Shows you all information about a role.",
-                             usage="Roleinfo <role>",with_app_command = True)
+                             usage="Roleinfo <role>")
     @blacklist_check()
     @ignore_check()
     async def roleinfo(self, ctx: commands.Context, *, role: discord.Role):
@@ -468,9 +468,9 @@ Threads : {len(guild.threads)}
 
     @blacklist_check()
     @ignore_check()
-    @commands.hybrid_command(name="status",
+    @commands.command(name="status",
                       description="Shows users status",
-                      usage="status <member>",with_app_command = True)
+                      usage="status <member>")
     async def status(self, ctx, member: discord.Member = None):
         if member == None:
             member = ctx.author
@@ -491,7 +491,7 @@ Threads : {len(guild.threads)}
             description="`%s`: `%s`" % (status_location, status),
             color=0x2f3136))
 
-    @commands.hybrid_command(name="emoji",
+    @commands.command(name="emoji",
                       help="Shows emoji syntax",
                       usage="emoji <emoji>")
     @blacklist_check()
@@ -502,9 +502,9 @@ Threads : {len(guild.threads)}
             description="emoji: %s\nid: **`%s`**" % (emoji, emoji.id),
             color=0x2f3136))
 
-    @commands.hybrid_command(name="user",
+    @commands.command(name="user",
                       help="Shows user syntax",
-                      usage="user [user]",with_app_command = True)
+                      usage="user [user]")
     @blacklist_check()
     @ignore_check()
     async def user(self, ctx, user: discord.Member = None):
@@ -514,7 +514,7 @@ Threads : {len(guild.threads)}
                                 (user.mention, user.id),
                                 color=0x2f3136))
 
-    @commands.hybrid_command(name="channel",
+    @commands.command(name="channel",
                       help="Shows channel syntax",
                       usage="channel <channel>")
     @blacklist_check()
@@ -530,10 +530,10 @@ Threads : {len(guild.threads)}
 
 
 
-    @commands.hybrid_command(name="steal",
+    @commands.command(name="steal",
                              help="Adds a emoji",
                              usage="steal <emoji>",
-                             aliases=["eadd"],with_app_command = True)
+                             aliases=["eadd"])
     @blacklist_check()
     @ignore_check()
     @commands.has_permissions(manage_emojis=True)
@@ -573,7 +573,7 @@ Threads : {len(guild.threads)}
                                     description=f"failed to add emoji",
                                     color=0x2f3136))
 
-    @commands.hybrid_command(name="removeemoji",
+    @commands.command(name="removeemoji",
                              help="Deletes the emoji from the server",
                              usage="removeemoji <emoji>")
     @blacklist_check()
@@ -584,10 +584,10 @@ Threads : {len(guild.threads)}
         await ctx.send(
             f"**{e.green_tick} emoji has been deleted.**")
 
-    @commands.hybrid_command(name="unbanall",
+    @commands.command(name="unbanall",
                              help="Unbans Everyone In The Guild!",
                              aliases=['massunban'],
-                             usage="Unbanall",with_app_command = True)
+                             usage="Unbanall")
     @blacklist_check()
     @ignore_check()
     @commands.cooldown(1, 30, commands.BucketType.user)
@@ -656,9 +656,9 @@ Threads : {len(guild.threads)}
         view.add_item(button1)
         await ctx.reply(embed=embed, view=view, mention_author=False)
 
-    @commands.hybrid_command(name="joined-at",
+    @commands.command(name="joined-at",
                       help="Shows when a user joined",
-                      usage="joined-at [user]",with_app_command = True)
+                      usage="joined-at [user]")
     @blacklist_check()
     @ignore_check()
     async def joined_at(self, ctx):
@@ -667,7 +667,7 @@ Threads : {len(guild.threads)}
                                            description="**`%s`**" % (joined),
                                            color=0x2f3136))
 
-    @commands.hybrid_command(name="github", usage="github [search]")
+    @commands.command(name="github", usage="github [search]")
     @blacklist_check()
     @ignore_check()
     async def github(self, ctx, *, search_query):
@@ -682,9 +682,9 @@ Threads : {len(guild.threads)}
                 f"First result for '{search_query}':\n{json['items'][0]['html_url']}"
             )
 
-    @commands.hybrid_command(name="vcinfo",
+    @commands.command(name="vcinfo",
                              help="get info about voice channel",
-                             usage="Vcinfo <VoiceChannel>",with_app_command = True)
+                             usage="Vcinfo <VoiceChannel>")
     @blacklist_check()
     @ignore_check()
     async def vcinfo(self, ctx: Context, vc: discord.VoiceChannel):
@@ -696,12 +696,12 @@ Threads : {len(guild.threads)}
         e.add_field(name='Category name', value=vc.category.name, inline=False)
         await ctx.send(embed=e)
 
-    @commands.hybrid_command(name="channelinfo",
+    @commands.command(name="channelinfo",
                              help="shows info about channel",
                              aliases=['channeli', 'cinfo', 'ci'],
                              pass_context=True,
                              no_pm=True,
-                             usage="Channelinfo [channel]",with_app_command = True)
+                             usage="Channelinfo [channel]")
     @blacklist_check()
     @ignore_check()
     async def channelinfo(self, ctx, *, channel: int = None):
@@ -775,7 +775,7 @@ Threads : {len(guild.threads)}
                     ctx.message.created_at - channel.created_at).days)))
         await ctx.send(embed=data)
 
-    @commands.hybrid_command(name="note",
+    @commands.command(name="note",
                       help="Creates a note for you (max 3 notes, 50 chars each)",
                       usage="note <message>")
     @cooldown(1, 10, BucketType.user)
@@ -792,7 +792,7 @@ Threads : {len(guild.threads)}
         await ctx.send("**Your note has been stored**")
         await ctx.message.delete()
 
-    @commands.hybrid_command(name="notes", help="Shows your notes", usage="notes")
+    @commands.command(name="notes", help="Shows your notes", usage="notes")
     @blacklist_check()
     @ignore_check()
     async def notes(self, ctx):
@@ -812,7 +812,7 @@ Threads : {len(guild.threads)}
             embed.add_field(name=f"Note {i}", value=note_text, inline=False)
         await ctx.send(embed=embed)
 
-    @commands.hybrid_command(name="trashnotes",
+    @commands.command(name="trashnotes",
                       help="Delete all your notes",
                       usage="trashnotes")
     @blacklist_check()
@@ -864,10 +864,10 @@ Threads : {len(guild.threads)}
         )
         return image_map
 
-    @commands.hybrid_command(name="badges",
+    @commands.command(name="badges",
                              help="Show a member's Yawr role badges.",
                              aliases=["badge", "profile", "pr"],
-                             usage="Badges [user]",with_app_command = True)
+                             usage="Badges [user]")
     @blacklist_check()
     @ignore_check()
     async def _badges(self, ctx, user: Optional[discord.User] = None):
@@ -956,9 +956,9 @@ Threads : {len(guild.threads)}
             allowed_mentions=discord.AllowedMentions.none(),
         )
 
-    @commands.hybrid_command(name="ping",
+    @commands.command(name="ping",
                              aliases=["latency"],
-                             usage="Checks the bot latency .",with_app_command = True)
+                             usage="Checks the bot latency .")
     @ignore_check()
     @blacklist_check()
     async def ping(self, ctx):
@@ -976,7 +976,7 @@ Threads : {len(guild.threads)}
                          else ctx.author.default_avatar.url)
         await ctx.reply(embed=embed)
       
-    @commands.hybrid_command(aliases=["sinfo","si"])
+    @commands.command(aliases=["sinfo","si"])
     @blacklist_check()
     async def serverinfo(self, ctx: commands.Context):
         nsfw_level = ''
